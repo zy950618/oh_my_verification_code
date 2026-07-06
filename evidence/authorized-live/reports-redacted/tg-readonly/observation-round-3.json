@@ -1,0 +1,33 @@
+{
+  "run_id": "observation-20260702T082437Z-tg-readonly",
+  "captured_at": "2026-07-02T08:24:37.738911+00:00",
+  "target_id": "tg-readonly",
+  "domain": "https://www.thaiairways.com",
+  "authorization_level": "authorized_readonly",
+  "actions_executed": [
+    "capture_network_inventory",
+    "detect_challenge_state",
+    "detect_fingerprint_state",
+    "extract_public_scripts",
+    "open_page"
+  ],
+  "requests_total": 1,
+  "rate_limit_observed": true,
+  "mutation_performed": false,
+  "network_performed": true,
+  "observation": {
+    "status": "PASS",
+    "started_at": "2026-07-02T08:24:37.305501+00:00",
+    "finished_at": "2026-07-02T08:24:37.738813+00:00",
+    "url": "https://www.thaiairways.com/",
+    "final_url": "https://www.thaiairways.com/",
+    "status_code": 403,
+    "content_type": "text/html",
+    "body_sha256": "eec2465e70a61bc6d776f0da48172ebcccf1a1fcd6a9e35bc67b5a242cde33fd",
+    "body_bytes_sampled": 919,
+    "scripts": [],
+    "challenge_state": "forbidden_or_challenge",
+    "captcha_state": "not_observed",
+    "waf_state": "forbidden_or_challenge"
+  }
+}

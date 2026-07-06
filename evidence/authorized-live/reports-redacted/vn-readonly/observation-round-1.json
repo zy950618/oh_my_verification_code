@@ -1,0 +1,66 @@
+{
+  "run_id": "observation-20260702T082119Z-vn-readonly",
+  "captured_at": "2026-07-02T08:21:19.635414+00:00",
+  "target_id": "vn-readonly",
+  "domain": "https://www.vietnamairlines.com",
+  "authorization_level": "authorized_readonly",
+  "actions_executed": [
+    "capture_network_inventory",
+    "detect_challenge_state",
+    "detect_fingerprint_state",
+    "extract_public_scripts",
+    "open_page"
+  ],
+  "requests_total": 1,
+  "rate_limit_observed": true,
+  "mutation_performed": false,
+  "network_performed": true,
+  "observation": {
+    "status": "PASS",
+    "started_at": "2026-07-02T08:21:18.967571+00:00",
+    "finished_at": "2026-07-02T08:21:19.634637+00:00",
+    "url": "https://www.vietnamairlines.com/",
+    "final_url": "https://www.vietnamairlines.com/jp/ja/",
+    "status_code": 200,
+    "content_type": "text/html",
+    "body_sha256": "2cf3a08135aea623a03756360e753e56736f0257ad5992c8c6a92464afd574f6",
+    "body_bytes_sampled": 256000,
+    "scripts": [
+      {
+        "url": "https://www.vietnamairlines.com/.rum/@adobe/helix-rum-js@%5E2/dist/micro.js",
+        "sha256": "0e33dc09fbeb626de2e8cc944aacd5454aef331d8326b069a04421ccec46ca42"
+      },
+      {
+        "url": "https://www.vietnamairlines.com/etc.clientlibs/core/wcm/components/commons/site/clientlibs/container.lc-0a6aff292f5cc42142779cde92054524-lc.min.js",
+        "sha256": "cb8e839bc494fefb99ebdfa180d7847c7e3173d973c1434d8740767dbce4bea9"
+      },
+      {
+        "url": "https://www.vietnamairlines.com/etc.clientlibs/clientlibs/granite/jquery/granite/csrf.lc-652a558c3774088b61b0530c184710d1-lc.min.js",
+        "sha256": "46ae629c20a459c893bcfaf3317fb9a5c6283a9fda552d517ba5577d36f0124b"
+      },
+      {
+        "url": "https://www.vietnamairlines.com/etc.clientlibs/vna/clientlibs/clientlib-base.lc-a9e9ab37fe132801410412d7425a4df9-lc.min.js",
+        "sha256": "1f8db6fffa725a2b5d4db5da6edbe1a480ef4e9e826d6bbbe22f1330b68d1442"
+      },
+      {
+        "url": "https://www.vietnamairlines.com/etc.clientlibs/cq/testandtarget/clientlibs/testandtarget/parameters.lc-775c9eb7ff4c48025fbe3d707bcf5f55-lc.min.js",
+        "sha256": "f7a936fe33c937237d7b981e75db5ec0f7297fec443d9d447e555c5140bd4435"
+      },
+      {
+        "url": "https://www.vietnamairlines.com/etc.clientlibs/clientlibs/granite/jquery.lc-7842899024219bcbdb5e72c946870b79-lc.min.js",
+        "sha256": "4f94d910af4c0eb55cbc661f46b6261c94d8f02f9720be7689a4d7443320798e"
+      },
+      {
+        "url": "https://www.vietnamairlines.com/etc.clientlibs/cq/personalization/clientlib/personalization/integrations/commons.lc-5370019fd157d93202ac2d6f771f04b8-lc.min.js",
+        "sha256": "11ca72de9d3d4cfe8ac0095afd1240beac82d70b8196a5b1e8d0a615aa52a94e"
+      },
+      {
+        "url": "https://www.vietnamairlines.com/etc.clientlibs/cq/testandtarget/clientlibs/testandtarget/atjs-integration.lc-401aa9ea1dd109fe7762186a74ae6c2b-lc.min.js",
+        "sha256": "0a851935957bcecb4f999aae3872dd292bcf9b14f67096f21d590cca0d71e53b"
+      }
+    ],
+    "challenge_state": "redirect_observed",
+    "captcha_state": "captcha_detected",
+    "waf_state": "not_observed"
+  }
+}

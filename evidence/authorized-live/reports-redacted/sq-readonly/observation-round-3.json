@@ -1,0 +1,46 @@
+{
+  "run_id": "observation-20260702T082443Z-sq-readonly",
+  "captured_at": "2026-07-02T08:24:43.290748+00:00",
+  "target_id": "sq-readonly",
+  "domain": "https://www.singaporeair.com",
+  "authorization_level": "authorized_readonly",
+  "actions_executed": [
+    "capture_network_inventory",
+    "detect_challenge_state",
+    "detect_fingerprint_state",
+    "extract_public_scripts",
+    "open_page"
+  ],
+  "requests_total": 1,
+  "rate_limit_observed": true,
+  "mutation_performed": false,
+  "network_performed": true,
+  "observation": {
+    "status": "PASS",
+    "started_at": "2026-07-02T08:24:42.827008+00:00",
+    "finished_at": "2026-07-02T08:24:43.290246+00:00",
+    "url": "https://www.singaporeair.com/",
+    "final_url": "https://www.singaporeair.com/zh_CN/cn/home",
+    "status_code": 200,
+    "content_type": "text/html",
+    "body_sha256": "f69423d6c84707fe0c354825a1587369a28bae1be655167bdb0c03be3f086a14",
+    "body_bytes_sampled": 256000,
+    "scripts": [
+      {
+        "url": "https://www.singaporeair.com/ruxitagentjs_ICANVfghqru_<REDACTED>.js",
+        "sha256": "ff36ad1331ce17f8ab836662ac1c2a5a1eac78ed1b38219b88c068a2ec435130"
+      },
+      {
+        "url": "https://www.singaporeair.com/assets/digitalweb/build/digitalweb-components-v18.esm.js",
+        "sha256": "19cf756682aad6d12aeb6b4d6a49c58f329d0d774eb3273f51bb33c9164aa488"
+      },
+      {
+        "url": "https://www.singaporeair.com/assets/digitalweb/build/digitalweb-components-v18.js",
+        "sha256": "f705db99646091e78a7267677b5b0ac2029dfbda6fc68bfeefbbe05e5d5cb492"
+      }
+    ],
+    "challenge_state": "redirect_observed",
+    "captcha_state": "captcha_detected",
+    "waf_state": "not_observed"
+  }
+}

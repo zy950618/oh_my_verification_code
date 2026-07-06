@@ -1,0 +1,33 @@
+{
+  "run_id": "observation-20260702T082118Z-scoot-readonly",
+  "captured_at": "2026-07-02T08:21:18.159248+00:00",
+  "target_id": "scoot-readonly",
+  "domain": "https://www.flyscoot.com",
+  "authorization_level": "authorized_readonly",
+  "actions_executed": [
+    "capture_network_inventory",
+    "detect_challenge_state",
+    "detect_fingerprint_state",
+    "extract_public_scripts",
+    "open_page"
+  ],
+  "requests_total": 1,
+  "rate_limit_observed": true,
+  "mutation_performed": false,
+  "network_performed": true,
+  "observation": {
+    "status": "PASS",
+    "started_at": "2026-07-02T08:21:17.938643+00:00",
+    "finished_at": "2026-07-02T08:21:18.159183+00:00",
+    "url": "https://www.flyscoot.com/",
+    "final_url": "https://www.flyscoot.com/",
+    "status_code": 403,
+    "content_type": "text/html",
+    "body_sha256": "08602d5db6e1f5b72dced0b2f14f372937eae2e2cf6732ef7bbe2cdc643c592a",
+    "body_bytes_sampled": 370,
+    "scripts": [],
+    "challenge_state": "forbidden_or_challenge",
+    "captcha_state": "not_observed",
+    "waf_state": "forbidden_or_challenge"
+  }
+}

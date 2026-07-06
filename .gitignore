@@ -1,0 +1,89 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.pytest_cache/
+.cache/
+.venv/
+venv/
+env/
+
+# IDE / OS
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+
+# 本地运行/抓包/录制
+runs/
+captures/
+.captures/
+recordings/
+local-runs/
+metrics/
+reports/raw/
+reports/**/raw/
+
+# 浏览器与会话状态
+browser-profiles/
+.browser-profiles/
+browser-profile/
+user-data-dir/
+userDataDir/
+**/user-data-dir/
+**/userDataDir/
+profiles/
+.profiles/
+storage-state*.json
+*.storage-state.json
+.auth/
+
+# 原始 evidence / 敏感材料
+*.har
+*.body
+*.dump
+*.tmp
+*.bak
+*.old
+*.orig
+*.log
+*.cookies
+*.cookie
+*.tokens
+*.token
+
+# 数据集大文件与生成物
+datasets/**/raw/
+datasets/**/models/
+datasets/**/checkpoints/
+datasets/**/exports/
+datasets/**/crops/
+**/checkpoints/
+
+# 模型权重与二进制包
+*.pt
+*.pth
+*.onnx
+*.safetensors
+*.pkl
+*.joblib
+*.zip
+*.tar
+*.gz
+
+# 私有配置
+private/
+*.local.yaml
+*.local.json
+.env
+.env.*
+
+# Playwright / 浏览器测试产物
+playwright-report/
+test-results/
+blob-report/
+.playwright/
+trace.zip
+*.trace.zip
+*.webm
+*.mp4

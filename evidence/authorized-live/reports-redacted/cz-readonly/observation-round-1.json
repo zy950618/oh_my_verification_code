@@ -1,0 +1,38 @@
+{
+  "run_id": "observation-20260702T082121Z-cz-readonly",
+  "captured_at": "2026-07-02T08:21:21.335707+00:00",
+  "target_id": "cz-readonly",
+  "domain": "https://www.csair.com",
+  "authorization_level": "authorized_readonly",
+  "actions_executed": [
+    "capture_network_inventory",
+    "detect_challenge_state",
+    "detect_fingerprint_state",
+    "extract_public_scripts",
+    "open_page"
+  ],
+  "requests_total": 1,
+  "rate_limit_observed": true,
+  "mutation_performed": false,
+  "network_performed": true,
+  "observation": {
+    "status": "PASS",
+    "started_at": "2026-07-02T08:21:21.135648+00:00",
+    "finished_at": "2026-07-02T08:21:21.335571+00:00",
+    "url": "https://www.csair.com/",
+    "final_url": "https://www.csair.com/",
+    "status_code": 200,
+    "content_type": "text/html",
+    "body_sha256": "fd3808ae8e8db22c24182f7968505b090840ce8c3601c04b4559fdcd7a6e1d3e",
+    "body_bytes_sampled": 6998,
+    "scripts": [
+      {
+        "url": "https://www.csair.com/iplocator/ip.aspx",
+        "sha256": "fed196180a4223a19d6d5ff806d1a95acc4bf100d0a19dc62501971551ed583c"
+      }
+    ],
+    "challenge_state": "no_challenge",
+    "captcha_state": "not_observed",
+    "waf_state": "not_observed"
+  }
+}

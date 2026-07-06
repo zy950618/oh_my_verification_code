@@ -1,0 +1,29 @@
+{
+  "run_id": "readonly-20260702T082126Z-mh-readonly",
+  "captured_at": "2026-07-02T08:21:26.565884+00:00",
+  "target_id": "mh-readonly",
+  "domain": "https://www.malaysiaairlines.com",
+  "authorization_level": "authorized_readonly",
+  "requests_total": 1,
+  "rate_limit_observed": true,
+  "mutation_performed": false,
+  "queries": [
+    {
+      "query_id": "homepage-readonly",
+      "query_type": "generic_readonly",
+      "method": "GET",
+      "timeout_seconds": 20,
+      "param_keys": [],
+      "status": "PASS",
+      "started_at": "2026-07-02T08:21:25.969548+00:00",
+      "finished_at": "2026-07-02T08:21:26.565806+00:00",
+      "url": "https://www.malaysiaairlines.com/",
+      "final_url": "https://www.malaysiaairlines.com/cn/zh_CN/home.html",
+      "status_code": 200,
+      "content_type": "text/html",
+      "body_sha256": "96def5a07ce7704eedb1445803ff8f4bebd64650d5fb5330fa5d0f6596d8df60",
+      "body_bytes_sampled": 26011,
+      "readonly_result": "redirect_observed"
+    }
+  ]
+}

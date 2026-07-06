@@ -1,0 +1,35 @@
+name: Captcha Project Static Gate
+
+on:
+  pull_request:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  static-gate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Setup Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+      - name: Check no raw sensitive artifacts
+        run: |
+          set -euo pipefail
+          BAD=$(find . -type f \( -name '*.har' -o -name '*.cookies' -o -name '*.tokens' -o -name '*.pt' -o -name '*.onnx' -o -name '*.safetensors' \) || true)
+          if [ -n "$BAD" ]; then
+            echo "Sensitive or large artifacts must not be committed:"
+            echo "$BAD"
+            exit 1
+          fi
+      - name: Check required docs
+        run: |
+          test -f README.md
+          test -f CLAUDE.md
+          test -f docs/captcha-type-matrix-and-api-contract.md
+          test -f docs/migration-from-oh-my-reverse-skill.md
