@@ -1,0 +1,18 @@
+id: captcha-action-validation-route-baseline
+skill: captcha-action-validation
+intent: route
+input:
+  fixture_type: file-backed fixture
+  positive_prompts:
+  - plan action
+  - coordinate transform
+  - local replay
+  negative_prompts:
+  - provider diagnostics only
+  - target adapter generation
+expected:
+  route: captcha-action-validation
+  fact_labels_required: true
+  business_success_requires_first_party_receipt: true
+  release_candidate_availability: blocked_without_external_implementation
+  generated_artifacts: not_applicable

@@ -1,35 +1,55 @@
-# oh_my_verifty_code — Claude 工作指南
+# CAPTCHA Verification Skills — Claude Guide
 
-本仓库是验证码专项 SKILLS / 工程库，从 `oh_my_reverse_skill` 拆分。
+This repository is an installable Skill suite, not a standalone CAPTCHA application.
 
-## 首要原则
+## Product boundary
 
-- 仅处理授权测试、防御研究、本地靶场、公开允许靶场、自有系统。
-- 不帮助未授权绕过真实生产 CAPTCHA/WAF/风控。
-- 坐标、角度、滑块距离、动作轨迹只能作为本地/授权验证输出，不能直接声明第三方站点自动通过。
-- 所有结论必须标注事实等级：`observed` / `derived` / `assumed` / `unverified`。
-- CAPTCHA 成功能力必须以最终业务 API 后端接受证据为准，不能以 challenge endpoint、provider test key、HTTP 200 或本地模型预测成功替代。
+- Treat the namespaced Claude Code Skills under `plugin/skills/` as the primary product.
+- Keep deterministic behavior in the provider-neutral Python package and `captcha-skills` CLI.
+- Keep FastAPI, MCP, browser, vision, and training integrations optional and thin.
+- Generate target-adapter engineering packages without executing them.
+- Keep partner-specific targets and authorization evidence in private overlays or repositories.
 
-## 目标交付
+## Evidence and authorization
 
-- FastAPI solver service：`/classify`、`/solve`、`/plan-action`。
-- 统一输出：`points`、`tiles`、`offset`、`angle`、`track`、`press`、`text`。
-- solver registry / model registry / dataset registry / action schema。
-- 本地与授权靶场训练。
-- 失败样本、数据集、模型评测闭环。
+- Work only with self-owned systems, local fixtures, public ranges that explicitly allow testing, official provider sandboxes/test keys, or targets covered by a validated authorization record.
+- Label material claims as `observed`, `derived`, `assumed`, or `unverified`.
+- Record unavailable approvals, telemetry, benchmarks, and external validation as **missing evidence**.
+- A claimed or oral authorization remains `unverified` and cannot enable production execution.
+- CAPTCHA success requires the final first-party protected business API receipt, business-data assertions, required repeat acceptance, and zero negative-control ledger delta.
+- Challenge endpoints, provider test keys, HTTP 200, browser text, provider tokens, and model predictions are not business success.
 
-## 必须保留的边界
+## Canonical output and registries
 
-拒绝或降级以下请求：
+- Normalized solution fields are `points`, `tiles`, `offset`, `angle_degrees`, `track`, `press`, and `text`.
+- Use separate solver, model, dataset, action, target, and evidence registries.
+- Use orthogonal operation, prediction, execution, provider-verification, business-acceptance, and promotion states. Do not emit a generic `PASS` as a capability decision.
+- Derive CLI JSON, FastAPI models, MCP schemas, exported JSON Schema, and generated adapters from the canonical Pydantic contracts in `plugin/src/`.
 
-- 未授权生产站点验证码绕过。
-- stealth、webdriver 隐藏、指纹伪造、clearance cookie 复用。
-- 伪造真实风控 token 或访问控制参数。
-- 把 `unverified` 结果包装成 `observed`。
-- 删除唯一证据但未迁移。
+## Retained boundaries
 
-## GitHub 上传原则
+Reject or downgrade:
 
-只提交规范、源码、schema、脱敏示例、CI。
+- unscoped third-party production CAPTCHA, WAF, or risk-control interaction;
+- stealth, webdriver hiding, fingerprint spoofing, or clearance-cookie reuse;
+- forged provider/risk/access-control tokens;
+- promotion of `unverified` claims to `observed`;
+- deletion of unique evidence without a validated migration.
 
-不要提交 raw HAR、cookie/token、浏览器 profile、模型权重、checkpoints、私有目标、未脱敏 evidence。
+Browser drivers can produce observation and execution receipts. They cannot issue first-party business-acceptance receipts or promote capabilities.
+
+## Repository paths
+
+- Canonical Skills: `plugin/skills/`
+- Provider-neutral core: `plugin/src/captcha_verification/`
+- Public evidence: `evidence/public-range/`
+- Skill experience: `experience/skills-experience/`
+- Public/local labs: `labs/public-range-labs/`
+- Non-discoverable legacy Skills: `archive/legacy-skills-v0/`
+- Migration maps: `migration/`
+
+Historical `origin_locator` values are provenance. Add `current_locator` and `locator_status` through the migration index instead of overwriting historical evidence.
+
+## Public repository policy
+
+Commit specifications, source, schemas, Skills, evals, CI, and sanitized examples. Do not commit raw HAR files, cookies or tokens, browser profiles, model weights/checkpoints, private targets, unsanitized reports, production evidence, or credentials.

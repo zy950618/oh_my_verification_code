@@ -1,0 +1,16 @@
+interface_version: '1.0'
+name: captcha-action-validation
+job_to_be_done: Validate supplied non-executable action-plan contracts without claiming a bundled planner, driver, or replay
+  runtime.
+inputs:
+- structured request or file-backed fixture
+outputs:
+- action-plan validation
+- coordinate and expiry findings
+- missing implementation evidence
+authorization_boundary: provider-neutral; local, self-owned, official sandbox, or explicitly authorized scope only
+acceptance_evidence: first-party business receipt, business-data assertions, repeat gate, and negative-control ledger invariants
+  when business success is claimed
+release_candidate_boundary:
+  availability: blocked_without_external_implementation
+  generated_artifacts: not_applicable

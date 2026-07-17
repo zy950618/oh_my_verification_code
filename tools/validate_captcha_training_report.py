@@ -10,7 +10,7 @@ from pathlib import Path
 
 
 REQUIRED_STAGES = {"dataset_audit", "label_audit", "train", "evaluate", "failure_review", "package"}
-DEFAULT_REPORT = Path("public-range-evidence/captcha-model-lab/manifests/training_report.json")
+DEFAULT_REPORT = Path("evidence/public-range/captcha-model-lab/manifests/training_report.json")
 
 
 def fail(message: str) -> None:

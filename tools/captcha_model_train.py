@@ -15,8 +15,8 @@ from PIL import Image, ImageOps
 
 
 ROOT = Path(__file__).resolve().parent.parent
-RAW_VISION = ROOT / "public-range-evidence" / "raw" / "captcha-vision-lab"
-RAW_TRAIN = ROOT / "public-range-evidence" / "raw" / "captcha-model-training"
+RAW_VISION = ROOT / "evidence" / "public-range" / "raw" / "captcha-vision-lab"
+RAW_TRAIN = ROOT / "evidence" / "public-range" / "raw" / "captcha-model-training"
 TEXT_CHARS = "ABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789"
 VECTOR_SIZE = (24, 32)
 

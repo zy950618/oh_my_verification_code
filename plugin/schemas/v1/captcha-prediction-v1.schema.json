@@ -1,0 +1,453 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "fact_level": {
+          "$ref": "#/$defs/FactLevel",
+          "default": "unverified"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "uri"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FactClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/FactLevel"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim",
+        "level"
+      ],
+      "title": "FactClaim",
+      "type": "object"
+    },
+    "FactLevel": {
+      "enum": [
+        "observed",
+        "derived",
+        "assumed",
+        "unverified"
+      ],
+      "title": "FactLevel",
+      "type": "string"
+    },
+    "NormalizedSolution": {
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "$ref": "#/$defs/SolutionType"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "points": {
+          "items": {
+            "$ref": "#/$defs/Point"
+          },
+          "title": "Points",
+          "type": "array"
+        },
+        "tiles": {
+          "items": {
+            "type": "integer"
+          },
+          "title": "Tiles",
+          "type": "array"
+        },
+        "offset": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Offset"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        },
+        "angle_degrees": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Angle Degrees"
+        },
+        "track": {
+          "items": {
+            "$ref": "#/$defs/TrackPoint"
+          },
+          "title": "Track",
+          "type": "array"
+        },
+        "press": {
+          "anyOf": [
+            {
+              "$ref": "#/$defs/Press"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null
+        }
+      },
+      "required": [
+        "type"
+      ],
+      "title": "NormalizedSolution",
+      "type": "object"
+    },
+    "Offset": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "default": 0,
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x"
+      ],
+      "title": "Offset",
+      "type": "object"
+    },
+    "Point": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "x",
+        "y"
+      ],
+      "title": "Point",
+      "type": "object"
+    },
+    "PredictionStatus": {
+      "enum": [
+        "not_run",
+        "produced",
+        "low_confidence",
+        "unsupported",
+        "failed"
+      ],
+      "title": "PredictionStatus",
+      "type": "string"
+    },
+    "Press": {
+      "additionalProperties": false,
+      "properties": {
+        "duration_ms": {
+          "exclusiveMinimum": 0,
+          "title": "Duration Ms",
+          "type": "integer"
+        },
+        "x": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "X"
+        },
+        "y": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Y"
+        }
+      },
+      "required": [
+        "duration_ms"
+      ],
+      "title": "Press",
+      "type": "object"
+    },
+    "SolutionType": {
+      "enum": [
+        "text",
+        "points",
+        "tiles",
+        "offset",
+        "angle",
+        "track",
+        "press"
+      ],
+      "title": "SolutionType",
+      "type": "string"
+    },
+    "TrackPoint": {
+      "additionalProperties": false,
+      "properties": {
+        "x": {
+          "title": "X",
+          "type": "number"
+        },
+        "y": {
+          "title": "Y",
+          "type": "number"
+        },
+        "time_ms": {
+          "minimum": 0,
+          "title": "Time Ms",
+          "type": "integer"
+        }
+      },
+      "required": [
+        "x",
+        "y",
+        "time_ms"
+      ],
+      "title": "TrackPoint",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-prediction/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "prediction_id": {
+      "title": "Prediction Id",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "challenge_instance_id": {
+      "title": "Challenge Instance Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/PredictionStatus"
+    },
+    "solution": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/NormalizedSolution"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "confidence": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Confidence"
+    },
+    "calibration_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Calibration Version"
+    },
+    "solver_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Solver Id"
+    },
+    "solver_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Solver Version"
+    },
+    "model_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Model Id"
+    },
+    "dataset_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Dataset Version"
+    },
+    "preprocessing_version": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Preprocessing Version"
+    },
+    "input_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Hash"
+    },
+    "latency_ms": {
+      "anyOf": [
+        {
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Latency Ms"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/FactClaim"
+      },
+      "title": "Facts",
+      "type": "array"
+    },
+    "business_acceptance_status": {
+      "const": "not_attempted",
+      "default": "not_attempted",
+      "title": "Business Acceptance Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "prediction_id",
+    "request_id",
+    "challenge_instance_id",
+    "status"
+  ],
+  "title": "PredictionOutcome",
+  "type": "object"
+}

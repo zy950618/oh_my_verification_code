@@ -35,7 +35,7 @@ def parse_existing_failures(source_run_id: str) -> list[dict[str, Any]]:
         ("gocaptcha-official", "gocaptcha-official-action-replay-records.jsonl"),
     ):
         base = RAW_EVIDENCE_ROOT / target
-        for path in sorted(base.glob(f"*/{filename}")):
+        for path in sorted(base.glob(f"{source_run_id}/{filename}")):
             for row in read_jsonl(path):
                 if row.get("success") is False:
                     item = dict(row)
@@ -103,15 +103,16 @@ def write_manifests(run_id: str, samples: list[dict[str, Any]], failure_refs: li
         "challenge_type": "captcha_failure_hard_sample_flywheel",
         "difficulty": "hard/adversarial/mixed",
         "sample_count": len(samples),
-        "synthetic_count": 0,
+        "synthetic_count": sum(1 for sample in samples if sample.get("acquisition_mode") == "synthetic"),
         "public_range_count": sum(1 for sample in samples if sample["target_id"] in {"opencaptchaworld", "gocaptcha-official"}),
         "compatible_lab_count": sum(1 for sample in samples if str(sample["target_id"]).endswith("compatible-lab")),
         "authorized_sample_count": 0,
         "train_count": train,
         "val_count": val,
         "test_count": test,
-        "label_source": "manually_labeled_training_sample",
+        "label_source": "deterministic_generator",
         "labeler": "local_flywheel_rule_labeler",
+        "provenance_status": "synthetic_programmatic_labels",
         "leakage_check": {"status": "pending", "label_removed_from_solver_inputs": True},
         "blackbox_mode": True,
         "allowed_usage": ["local_training", "public_range_retest", "self_owned_authorized_retest"],

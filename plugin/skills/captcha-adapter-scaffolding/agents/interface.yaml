@@ -1,0 +1,15 @@
+interface_version: '1.0'
+name: captcha-adapter-scaffolding
+job_to_be_done: Generate a private versioned target-adapter engineering package without importing or executing it.
+inputs:
+- structured request or file-backed fixture
+outputs:
+- scaffold manifest
+- generated paths and hashes
+- static validation report
+authorization_boundary: provider-neutral; local, self-owned, official sandbox, or explicitly authorized scope only
+acceptance_evidence: first-party business receipt, business-data assertions, repeat gate, and negative-control ledger invariants
+  when business success is claimed
+release_candidate_boundary:
+  availability: available_generate_only
+  generated_artifacts: generated_not_executed

@@ -51,30 +51,36 @@ def audit_predictions(path: Path, label: str) -> list[dict[str, Any]]:
 
 
 def split_contamination(manifest: dict[str, Any]) -> list[dict[str, Any]]:
-    seen: dict[str, str] = {}
+    seen_images: dict[str, str] = {}
+    seen_lineages: dict[str, str] = {}
     violations = []
     for sample in manifest.get("samples", []):
         image_path = str(sample.get("image_path"))
+        lineage_id = sample.get("lineage_id")
         split = str(sample.get("split"))
-        if image_path in seen and seen[image_path] != split:
-            violations.append({"image_path": image_path, "reason": "same image appears in multiple splits", "first_split": seen[image_path], "second_split": split})
-        seen[image_path] = split
+        if image_path in seen_images and seen_images[image_path] != split:
+            violations.append({"image_path": image_path, "reason": "same image appears in multiple splits", "first_split": seen_images[image_path], "second_split": split})
+        seen_images[image_path] = split
+        if lineage_id and lineage_id in seen_lineages and seen_lineages[lineage_id] != split:
+            violations.append({"lineage_id": lineage_id, "reason": "same lineage appears in multiple splits", "first_split": seen_lineages[lineage_id], "second_split": split})
+        if lineage_id:
+            seen_lineages[lineage_id] = split
     return violations
 
 
 def audit_action_replay(run_id: str) -> list[dict[str, Any]]:
     violations = []
     paths = [
-        ROOT / "public-range-evidence" / "raw" / "local-gocaptcha-compatible-lab" / run_id / "gocaptcha-action-replay-metrics.json",
-        ROOT / "public-range-evidence" / "raw" / "gocaptcha-local" / run_id / "gocaptcha-action-replay-metrics.json",
-        ROOT / "public-range-evidence" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-metrics.json",
-        ROOT / "public-range-evidence" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-metrics.json",
-        ROOT / "public-range-evidence" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "shumei-compatible-lab" / run_id / "shumei-compatible-lab-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "aliyun-compatible-lab" / run_id / "aliyun-compatible-lab-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "five-second-shield-lab" / run_id / "five-second-shield-action-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "captcha-vision-lab" / run_id / "action-replay-metrics.json",
+        ROOT / "evidence" / "public-range" / "raw" / "local-gocaptcha-compatible-lab" / run_id / "gocaptcha-action-replay-metrics.json",
+        ROOT / "evidence" / "public-range" / "raw" / "gocaptcha-local" / run_id / "gocaptcha-action-replay-metrics.json",
+        ROOT / "evidence" / "public-range" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-metrics.json",
+        ROOT / "evidence" / "public-range" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-metrics.json",
+        ROOT / "evidence" / "public-range" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "shumei-compatible-lab" / run_id / "shumei-compatible-lab-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "aliyun-compatible-lab" / run_id / "aliyun-compatible-lab-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "five-second-shield-lab" / run_id / "five-second-shield-action-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "captcha-vision-lab" / run_id / "action-replay-metrics.json",
     ]
     for path in paths:
         if not path.is_file():
@@ -113,14 +119,14 @@ def audit_action_replay(run_id: str) -> list[dict[str, Any]]:
 
 def update_public_evidence(run_id: str, status: str, report_path: Path) -> None:
     for path in (
-        ROOT / "public-range-evidence" / "gocaptcha-local" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "gocaptcha-official" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "opencaptchaworld" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "local-gocaptcha-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "captcha-vision-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "shumei-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "aliyun-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "five-second-shield-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "gocaptcha-local" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "gocaptcha-official" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "opencaptchaworld" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "local-gocaptcha-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "captcha-vision-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "shumei-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "aliyun-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "five-second-shield-lab" / f"{run_id}.json",
     ):
         if not path.is_file():
             continue
@@ -142,16 +148,16 @@ def main() -> int:
     parser.add_argument("--run-id", required=True)
     args = parser.parse_args()
     run_id = args.run_id
-    vision_dir = ROOT / "public-range-evidence" / "raw" / "captcha-vision-lab" / run_id
+    vision_dir = ROOT / "evidence" / "public-range" / "raw" / "captcha-vision-lab" / run_id
     manifest_path = vision_dir / "dataset-manifest.json"
     failures: list[dict[str, Any]] = []
     warnings: list[dict[str, Any]] = []
     action_paths = [
-        ROOT / "public-range-evidence" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "shumei-compatible-lab" / run_id / "shumei-compatible-lab-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "aliyun-compatible-lab" / run_id / "aliyun-compatible-lab-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "five-second-shield-lab" / run_id / "five-second-shield-action-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "shumei-compatible-lab" / run_id / "shumei-compatible-lab-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "aliyun-compatible-lab" / run_id / "aliyun-compatible-lab-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "five-second-shield-lab" / run_id / "five-second-shield-action-records.jsonl",
     ]
     has_public_action_replay = any(path.is_file() for path in action_paths)
     if not manifest_path.is_file():
@@ -171,13 +177,13 @@ def main() -> int:
     failures.extend(audit_action_replay(run_id))
 
     public_paths = [
-        ROOT / "public-range-evidence" / "gocaptcha-local" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "gocaptcha-official" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "opencaptchaworld" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "captcha-vision-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "shumei-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "aliyun-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "five-second-shield-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "gocaptcha-local" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "gocaptcha-official" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "opencaptchaworld" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "captcha-vision-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "shumei-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "aliyun-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "five-second-shield-lab" / f"{run_id}.json",
     ]
     for path in public_paths:
         if path.is_file():
@@ -207,7 +213,7 @@ def main() -> int:
             "positive_allowed": False if failures else None,
         },
     }
-    out = ROOT / "public-range-evidence" / "raw" / "captcha-leakage-audit" / run_id / "leakage-audit.json"
+    out = ROOT / "evidence" / "public-range" / "raw" / "captcha-leakage-audit" / run_id / "leakage-audit.json"
     write_json(out, report)
     update_public_evidence(run_id, status, out)
     print(json.dumps({"status": status, "run_id": run_id, "report_path": str(out), "failure_count": len(failures)}, ensure_ascii=False, indent=2))

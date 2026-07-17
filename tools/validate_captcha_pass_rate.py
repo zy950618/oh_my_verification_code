@@ -10,7 +10,7 @@ import sys
 from pathlib import Path
 
 
-DEFAULT_REPORT = Path("public-range-evidence/captcha-model-lab/manifests/pass_rate_report.json")
+DEFAULT_REPORT = Path("evidence/public-range/captcha-model-lab/manifests/pass_rate_report.json")
 
 
 def fail(message: str) -> None:

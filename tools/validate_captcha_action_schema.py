@@ -20,7 +20,7 @@ ACTION_KINDS = {
     "drag_move",
     "drag_end",
 }
-DEFAULT_MANIFEST = Path("public-range-evidence/captcha-model-lab/manifests/action_manifest.json")
+DEFAULT_MANIFEST = Path("evidence/public-range/captcha-model-lab/manifests/action_manifest.json")
 
 
 def fail(message: str) -> None:

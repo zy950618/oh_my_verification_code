@@ -1,0 +1,175 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "fact_level": {
+          "$ref": "#/$defs/FactLevel",
+          "default": "unverified"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "uri"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FactClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/FactLevel"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim",
+        "level"
+      ],
+      "title": "FactClaim",
+      "type": "object"
+    },
+    "FactLevel": {
+      "enum": [
+        "observed",
+        "derived",
+        "assumed",
+        "unverified"
+      ],
+      "title": "FactLevel",
+      "type": "string"
+    },
+    "ProviderCandidate": {
+      "additionalProperties": false,
+      "properties": {
+        "provider": {
+          "title": "Provider",
+          "type": "string"
+        },
+        "confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Confidence",
+          "type": "number"
+        },
+        "markers": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Markers",
+          "type": "array"
+        },
+        "evidence": {
+          "items": {
+            "$ref": "#/$defs/EvidenceRef"
+          },
+          "title": "Evidence",
+          "type": "array"
+        }
+      },
+      "required": [
+        "provider",
+        "confidence"
+      ],
+      "title": "ProviderCandidate",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-classification/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "classification_id": {
+      "title": "Classification Id",
+      "type": "string"
+    },
+    "provider_candidates": {
+      "items": {
+        "$ref": "#/$defs/ProviderCandidate"
+      },
+      "title": "Provider Candidates",
+      "type": "array"
+    },
+    "challenge_family": {
+      "title": "Challenge Family",
+      "type": "string"
+    },
+    "confidence": {
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Confidence",
+      "type": "number"
+    },
+    "required_solver_capability": {
+      "title": "Required Solver Capability",
+      "type": "string"
+    },
+    "authorization_decision": {
+      "title": "Authorization Decision",
+      "type": "string"
+    },
+    "classifier_version": {
+      "title": "Classifier Version",
+      "type": "string"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/FactClaim"
+      },
+      "title": "Facts",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
+      "type": "array"
+    }
+  },
+  "required": [
+    "classification_id",
+    "provider_candidates",
+    "challenge_family",
+    "confidence",
+    "required_solver_capability",
+    "authorization_decision",
+    "classifier_version"
+  ],
+  "title": "ClassificationResult",
+  "type": "object"
+}

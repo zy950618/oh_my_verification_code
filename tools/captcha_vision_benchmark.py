@@ -316,7 +316,7 @@ def thresholds() -> dict[str, Any]:
 
 
 def write_failure_cards(run_id: str, failure_cases: dict[str, list[dict[str, Any]]]) -> list[str]:
-    out_dir = Path("skills-experience") / "captcha-failure-cases"
+    out_dir = Path("experience/skills-experience") / "captcha-failure-cases"
     out_dir.mkdir(parents=True, exist_ok=True)
     paths: list[str] = []
     written = 0
@@ -355,7 +355,7 @@ def main() -> int:
     parser.add_argument("--require-threshold-report", action="store_true")
     args = parser.parse_args()
     if args.run_id and not args.predictions:
-        prediction_path = Path("public-range-evidence") / "raw" / "captcha-vision-lab" / args.run_id / "baseline-predictions.json"
+        prediction_path = Path("evidence/public-range") / "raw" / "captcha-vision-lab" / args.run_id / "baseline-predictions.json"
     elif args.predictions:
         prediction_path = Path(args.predictions)
     else:

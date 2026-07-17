@@ -16,7 +16,8 @@ def main() -> int:
     manifest = read_json(manifest_path)
     splits = {"train": [], "val": [], "test": []}
     for sample in manifest.get("samples", []):
-        split = deterministic_split(sample["sample_id"])
+        group_id = str(sample.get("lineage_id") or sample["sample_id"])
+        split = deterministic_split(group_id)
         sample["split"] = split
         splits[split].append(sample["sample_id"])
     manifest["train_count"] = len(splits["train"])
@@ -28,14 +29,14 @@ def main() -> int:
         "run_id": args.run_id,
         "dataset_id": manifest["dataset_id"],
         "created_at": utc_now(),
-        "strategy": "sha256(sample_id)_70_15_15",
+        "strategy": "sha256(lineage_id_or_sample_id)_70_15_15",
         "train": splits["train"],
         "val": splits["val"],
         "test": splits["test"],
         "counts": {key: len(value) for key, value in splits.items()},
         "leakage_check": {
             "same_sample_cross_split": False,
-            "split_uses_challenge_instance_id_hash": True,
+            "split_uses_lineage_or_sample_hash": True,
         },
     }
     out = DATASET_ROOT / "splits" / args.run_id / "split_manifest.json"

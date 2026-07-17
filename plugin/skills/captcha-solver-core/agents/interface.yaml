@@ -1,0 +1,15 @@
+interface_version: '1.0'
+name: captcha-solver-core
+job_to_be_done: Validate normalized prediction contracts and solver registry decisions without claiming a bundled solver implementation.
+inputs:
+- structured request or file-backed fixture
+outputs:
+- prediction contract validation
+- registry decision
+- missing implementation evidence
+authorization_boundary: provider-neutral; local, self-owned, official sandbox, or explicitly authorized scope only
+acceptance_evidence: first-party business receipt, business-data assertions, repeat gate, and negative-control ledger invariants
+  when business success is claimed
+release_candidate_boundary:
+  availability: blocked_without_external_implementation
+  generated_artifacts: not_applicable

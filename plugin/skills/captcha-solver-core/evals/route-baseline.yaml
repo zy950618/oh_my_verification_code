@@ -1,0 +1,18 @@
+id: captcha-solver-core-route-baseline
+skill: captcha-solver-core
+intent: route
+input:
+  fixture_type: file-backed fixture
+  positive_prompts:
+  - classify challenge
+  - solve image
+  - solver registry
+  negative_prompts:
+  - browser execution
+  - business acceptance
+expected:
+  route: captcha-solver-core
+  fact_labels_required: true
+  business_success_requires_first_party_receipt: true
+  release_candidate_availability: blocked_without_external_implementation
+  generated_artifacts: not_applicable

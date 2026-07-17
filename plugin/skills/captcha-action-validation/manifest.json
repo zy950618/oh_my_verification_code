@@ -1,0 +1,41 @@
+{
+  "schema_version": "skill-manifest/v1",
+  "name": "captcha-action-validation",
+  "owner": "zhaoyang",
+  "version": "1.0.0-rc.1",
+  "lifecycle": "governed",
+  "review_cadence": "quarterly",
+  "input_files": "file-backed fixture",
+  "output_contract": [
+    "action-plan validation",
+    "coordinate and expiry findings",
+    "missing implementation evidence"
+  ],
+  "rollback_boundary": "Revert this Skill package and its registry entry without deleting evidence or private overlays.",
+  "trigger_surface": {
+    "should_trigger": [
+      "plan action",
+      "coordinate transform",
+      "local replay"
+    ],
+    "should_not_trigger": [
+      "provider diagnostics only",
+      "target adapter generation"
+    ],
+    "near_neighbors": [
+      "other captcha-verification-skills routes"
+    ]
+  },
+  "risk": {
+    "level": "high",
+    "missing_evidence": [
+      "live provider benchmark",
+      "external approval telemetry"
+    ]
+  },
+  "release_candidate_boundary": {
+    "availability": "blocked_without_external_implementation",
+    "generated_artifacts": "not_applicable",
+    "summary": "Validates supplied action-plan contracts; no planner, driver, or replay implementation is bundled."
+  }
+}

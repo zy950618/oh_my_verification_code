@@ -26,7 +26,7 @@ REQUIRED_BOUNDARIES = {
     "final_business_api_required_for_positive",
     "repeat_verified_required_for_success_claim",
 }
-FRESH_EVIDENCE = "public-range-evidence/fingerprint-risk-lab/fresh-evidence"
+FRESH_EVIDENCE = "evidence/public-range/fingerprint-risk-lab/fresh-evidence"
 
 
 def load_json(path: Path) -> tuple[dict[str, Any], list[str]]:
@@ -104,8 +104,8 @@ def validate_pack(path: Path) -> dict[str, Any]:
 def main() -> int:
     parser = argparse.ArgumentParser(description="Validate CAPTCHA/fingerprint linkage lab and real-site packs")
     parser.add_argument("--repo-root", default=str(Path(__file__).resolve().parent.parent))
-    parser.add_argument("--manifest", default="7-指纹风控层/_lab/captcha_fingerprint_linkage_manifest.json")
-    parser.add_argument("--packs-root", default="public-range-evidence/real-site-observation-pack")
+    parser.add_argument("--manifest", required=True, help="Path to a diagnostics-only linkage manifest")
+    parser.add_argument("--packs-root", default="evidence/public-range/real-site-observation-pack")
     args = parser.parse_args()
     repo_root = Path(args.repo_root)
     manifest_path = Path(args.manifest)

@@ -14,7 +14,7 @@ def main() -> int:
     parser = argparse.ArgumentParser(description="Report CAPTCHA model/baseline eval metrics")
     parser.add_argument("--run-id", required=True)
     args = parser.parse_args()
-    model_eval_path = REPO_ROOT / "public-range-evidence" / "raw" / "captcha-model-training" / args.run_id / "model-eval.json"
+    model_eval_path = REPO_ROOT / "evidence" / "public-range" / "raw" / "captcha-model-training" / args.run_id / "model-eval.json"
     if model_eval_path.is_file():
         model_eval = json.loads(model_eval_path.read_text(encoding="utf-8-sig"))
         metrics_path = Path(model_eval["trained_benchmark_metrics_path"])
@@ -42,7 +42,7 @@ def main() -> int:
         }
         print(json.dumps(payload, ensure_ascii=False, indent=2))
         return 0
-    path = REPO_ROOT / "public-range-evidence" / "raw" / "captcha-vision-lab" / args.run_id / "benchmark-metrics.json"
+    path = REPO_ROOT / "evidence" / "public-range" / "raw" / "captcha-vision-lab" / args.run_id / "benchmark-metrics.json"
     if not path.is_file():
         raise SystemExit(f"missing benchmark metrics: {path}")
     data = json.loads(path.read_text(encoding="utf-8-sig"))

@@ -14,7 +14,7 @@ REQUIRED_PROHIBITED_CLAIMS = {
     "managed_challenge_auto_pass",
     "provider_success_without_business_repeat_verified",
 }
-DEFAULT_MANIFEST = Path("public-range-evidence/captcha-model-lab/manifests/package_manifest.json")
+DEFAULT_MANIFEST = Path("evidence/public-range/captcha-model-lab/manifests/package_manifest.json")
 
 
 def fail(message: str) -> None:

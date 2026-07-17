@@ -1,0 +1,18 @@
+id: captcha-authorized-flow-route-baseline
+skill: captcha-authorized-flow
+intent: route
+input:
+  fixture_type: file-backed fixture
+  positive_prompts:
+  - authorization review
+  - business acceptance gate
+  - repeat verification
+  negative_prompts:
+  - isolated image prediction
+  - dataset training
+expected:
+  route: captcha-authorized-flow
+  fact_labels_required: true
+  business_success_requires_first_party_receipt: true
+  release_candidate_availability: blocked_without_external_implementation
+  generated_artifacts: not_applicable

@@ -1,0 +1,125 @@
+{
+  "$defs": {
+    "AssetRef": {
+      "additionalProperties": false,
+      "properties": {
+        "asset_id": {
+          "title": "Asset Id",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "media_type": {
+          "title": "Media Type",
+          "type": "string"
+        },
+        "sha256": {
+          "title": "Sha256",
+          "type": "string"
+        }
+      },
+      "required": [
+        "asset_id",
+        "uri",
+        "media_type",
+        "sha256"
+      ],
+      "title": "AssetRef",
+      "type": "object"
+    },
+    "SolutionType": {
+      "enum": [
+        "text",
+        "points",
+        "tiles",
+        "offset",
+        "angle",
+        "track",
+        "press"
+      ],
+      "title": "SolutionType",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-solve-request/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "challenge_instance_id": {
+      "title": "Challenge Instance Id",
+      "type": "string"
+    },
+    "challenge_family": {
+      "title": "Challenge Family",
+      "type": "string"
+    },
+    "assets": {
+      "items": {
+        "$ref": "#/$defs/AssetRef"
+      },
+      "title": "Assets",
+      "type": "array"
+    },
+    "allowed_solution_types": {
+      "items": {
+        "$ref": "#/$defs/SolutionType"
+      },
+      "title": "Allowed Solution Types",
+      "type": "array"
+    },
+    "classification_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Classification Id"
+    },
+    "solver_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Solver Id"
+    },
+    "authorization_record_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Authorization Record Id"
+    }
+  },
+  "required": [
+    "request_id",
+    "challenge_instance_id",
+    "challenge_family",
+    "assets",
+    "allowed_solution_types"
+  ],
+  "title": "SolveRequest",
+  "type": "object"
+}

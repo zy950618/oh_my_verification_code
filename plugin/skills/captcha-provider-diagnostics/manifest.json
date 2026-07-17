@@ -1,0 +1,41 @@
+{
+  "schema_version": "skill-manifest/v1",
+  "name": "captcha-provider-diagnostics",
+  "owner": "zhaoyang",
+  "version": "1.0.0-rc.1",
+  "lifecycle": "library",
+  "review_cadence": "quarterly",
+  "input_files": "file-backed fixture",
+  "output_contract": [
+    "provider evidence analysis",
+    "flow-stage contract",
+    "missing evidence"
+  ],
+  "rollback_boundary": "Revert this Skill package and its registry entry without deleting evidence or private overlays.",
+  "trigger_surface": {
+    "should_trigger": [
+      "provider detection",
+      "site binding",
+      "verify versus business API"
+    ],
+    "should_not_trigger": [
+      "action replay",
+      "model training"
+    ],
+    "near_neighbors": [
+      "other captcha-verification-skills routes"
+    ]
+  },
+  "risk": {
+    "level": "medium",
+    "missing_evidence": [
+      "live provider benchmark",
+      "external approval telemetry"
+    ]
+  },
+  "release_candidate_boundary": {
+    "availability": "blocked_without_external_implementation",
+    "generated_artifacts": "not_applicable",
+    "summary": "Analyzes supplied authorized evidence; it does not browse, probe, or run a classifier."
+  }
+}

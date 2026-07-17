@@ -1,0 +1,238 @@
+{
+  "$defs": {
+    "Action": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "time_ms": {
+          "minimum": 0,
+          "title": "Time Ms",
+          "type": "integer"
+        },
+        "x": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "X"
+        },
+        "y": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Y"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "duration_ms": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Ms"
+        },
+        "angle_degrees": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Angle Degrees"
+        }
+      },
+      "required": [
+        "kind",
+        "time_ms"
+      ],
+      "title": "Action",
+      "type": "object"
+    },
+    "ActionKind": {
+      "enum": [
+        "pointer_down",
+        "pointer_move",
+        "pointer_up",
+        "tap",
+        "click",
+        "wait",
+        "type_text",
+        "press",
+        "rotate"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "CoordinateFrame": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "number"
+        },
+        "device_pixel_ratio": {
+          "exclusiveMinimum": 0,
+          "title": "Device Pixel Ratio",
+          "type": "number"
+        },
+        "crop_x": {
+          "default": 0,
+          "title": "Crop X",
+          "type": "number"
+        },
+        "crop_y": {
+          "default": 0,
+          "title": "Crop Y",
+          "type": "number"
+        },
+        "scroll_x": {
+          "default": 0,
+          "title": "Scroll X",
+          "type": "number"
+        },
+        "scroll_y": {
+          "default": 0,
+          "title": "Scroll Y",
+          "type": "number"
+        },
+        "iframe_x": {
+          "default": 0,
+          "title": "Iframe X",
+          "type": "number"
+        },
+        "iframe_y": {
+          "default": 0,
+          "title": "Iframe Y",
+          "type": "number"
+        },
+        "rounding": {
+          "default": "nearest",
+          "title": "Rounding",
+          "type": "string"
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "device_pixel_ratio"
+      ],
+      "title": "CoordinateFrame",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-action-plan/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "challenge_instance_id": {
+      "title": "Challenge Instance Id",
+      "type": "string"
+    },
+    "source_prediction_id": {
+      "title": "Source Prediction Id",
+      "type": "string"
+    },
+    "coordinate_frame": {
+      "$ref": "#/$defs/CoordinateFrame"
+    },
+    "actions": {
+      "items": {
+        "$ref": "#/$defs/Action"
+      },
+      "title": "Actions",
+      "type": "array"
+    },
+    "constraints": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Constraints",
+      "type": "array"
+    },
+    "stop_conditions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Stop Conditions",
+      "type": "array"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "authorization_record_id": {
+      "title": "Authorization Record Id",
+      "type": "string"
+    },
+    "executable": {
+      "const": false,
+      "default": false,
+      "title": "Executable",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "plan_id",
+    "challenge_instance_id",
+    "source_prediction_id",
+    "coordinate_frame",
+    "actions",
+    "stop_conditions",
+    "created_at",
+    "expires_at",
+    "authorization_record_id"
+  ],
+  "title": "ActionPlan",
+  "type": "object"
+}

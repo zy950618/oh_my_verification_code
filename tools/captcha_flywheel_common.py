@@ -12,7 +12,7 @@ from typing import Any
 
 ROOT = Path(__file__).resolve().parent.parent
 DATASET_ROOT = ROOT / "datasets" / "captcha_flywheel"
-PUBLIC_ROOT = ROOT / "public-range-evidence"
+PUBLIC_ROOT = ROOT / "evidence" / "public-range"
 RAW_EVIDENCE_ROOT = PUBLIC_ROOT / "raw"
 PHASE311_RUN = "run-20260630-173000-phase3-11-type-matrix"
 ALLOWED_SOLVER_SOURCE = {
@@ -59,8 +59,9 @@ def ensure_dirs() -> None:
         (DATASET_ROOT / name).mkdir(parents=True, exist_ok=True)
 
 
-def deterministic_split(sample_id: str) -> str:
-    bucket = int(hashlib.sha256(sample_id.encode()).hexdigest()[:8], 16) % 100
+def deterministic_split(group_id: str) -> str:
+    """Assign an entire challenge/template lineage to one split."""
+    bucket = int(hashlib.sha256(group_id.encode()).hexdigest()[:8], 16) % 100
     if bucket < 70:
         return "train"
     if bucket < 85:
@@ -87,9 +88,11 @@ def svg_grid(seed: str, family: str, target: str, sequence: list[str] | None = N
 
 def sample_base(run_id: str, dataset_id: str, index: int, target_id: str, family: str, difficulty: str) -> dict[str, Any]:
     sample_id = f"{dataset_id}-{target_id}-{family}-{difficulty}-{index:04d}".replace("/", "_")
+    lineage_id = f"{dataset_id}:{target_id}:{family}:{difficulty}:{index // 10}"
     return {
         "sample_id": sample_id,
         "challenge_instance_id": hashlib.sha256(sample_id.encode()).hexdigest()[:16],
+        "lineage_id": hashlib.sha256(lineage_id.encode()).hexdigest()[:16],
         "source_run_id": run_id,
         "target_id": target_id,
         "family": family,
@@ -97,13 +100,14 @@ def sample_base(run_id: str, dataset_id: str, index: int, target_id: str, family
         "instruction": "",
         "allowed_actions": [],
         "label": {},
-        "label_source": "manually_labeled_training_sample",
+        "label_source": "deterministic_generator",
+        "acquisition_mode": "synthetic",
         "prediction": None,
         "feedback_state": "training_sample",
         "action_trace": [],
         "success": False,
         "failure_reason": "",
-        "split": deterministic_split(sample_id),
+        "split": deterministic_split(lineage_id),
         "leakage_sensitive_fields_removed": True,
         "solver_source": dict(ALLOWED_SOLVER_SOURCE),
     }

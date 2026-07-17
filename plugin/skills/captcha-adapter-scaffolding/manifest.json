@@ -1,0 +1,41 @@
+{
+  "schema_version": "skill-manifest/v1",
+  "name": "captcha-adapter-scaffolding",
+  "owner": "zhaoyang",
+  "version": "1.0.0-rc.1",
+  "lifecycle": "governed",
+  "review_cadence": "quarterly",
+  "input_files": "file-backed fixture",
+  "output_contract": [
+    "scaffold manifest",
+    "generated paths and hashes",
+    "static validation report"
+  ],
+  "rollback_boundary": "Revert this Skill package and its registry entry without deleting evidence or private overlays.",
+  "trigger_surface": {
+    "should_trigger": [
+      "generate target interface",
+      "scaffold adapter",
+      "create adapter tests"
+    ],
+    "should_not_trigger": [
+      "run target",
+      "automatic browser interaction"
+    ],
+    "near_neighbors": [
+      "other captcha-verification-skills routes"
+    ]
+  },
+  "risk": {
+    "level": "high",
+    "missing_evidence": [
+      "live provider benchmark",
+      "external approval telemetry"
+    ]
+  },
+  "release_candidate_boundary": {
+    "availability": "available_generate_only",
+    "generated_artifacts": "generated_not_executed",
+    "summary": "Deterministically generates or previews private adapter files; generated files are never executed."
+  }
+}

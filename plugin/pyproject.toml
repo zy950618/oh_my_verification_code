@@ -1,0 +1,61 @@
+[build-system]
+requires = ["hatchling>=1.26"]
+build-backend = "hatchling.build"
+
+[project]
+name = "captcha-verification-skills"
+version = "1.0.0rc1"
+description = "Provider-neutral core and CLI for the CAPTCHA Verification Skills suite"
+readme = "README.md"
+requires-python = ">=3.11"
+license = "MIT"
+authors = [{ name = "zhaoyang" }]
+dependencies = [
+  "pydantic>=2.10,<3",
+  "PyYAML>=6.0,<7",
+]
+classifiers = [
+  "Development Status :: 3 - Alpha",
+  "License :: OSI Approved :: MIT License",
+  "Programming Language :: Python :: 3",
+  "Programming Language :: Python :: 3.11",
+  "Programming Language :: Python :: 3.12",
+  "Typing :: Typed",
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.115,<1", "uvicorn>=0.34,<1"]
+mcp = ["mcp>=1.27,<2"]
+browser = ["playwright>=1.51,<2"]
+vision = ["Pillow>=11,<13"]
+train = ["numpy>=2,<3"]
+dev = [
+  "build>=1.2,<2",
+  "httpx>=0.28,<1",
+  "pytest>=8.3,<9",
+  "pytest-cov>=6,<7",
+]
+
+[project.scripts]
+captcha-skills = "captcha_verification.cli:main"
+
+[project.urls]
+Repository = "https://github.com/zy950618/oh_my_verification_code"
+Issues = "https://github.com/zy950618/oh_my_verification_code/issues"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/captcha_verification"]
+
+[tool.hatch.build]
+include = [
+  "src/captcha_verification/**/*.py",
+  "src/captcha_verification/templates/**/*.tpl",
+]
+
+[tool.pytest.ini_options]
+addopts = "-ra --strict-markers"
+testpaths = ["tests"]
+
+[tool.coverage.run]
+source = ["captcha_verification"]
+branch = true

@@ -362,7 +362,7 @@ def generate(args: argparse.Namespace) -> dict[str, Any]:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Generate hardened synthetic CAPTCHA vision dataset")
-    parser.add_argument("--output-root", default="public-range-evidence")
+    parser.add_argument("--output-root", default="evidence/public-range")
     parser.add_argument("--run-id")
     parser.add_argument("--count", type=int, default=100)
     parser.add_argument("--adversarial-count", type=int, default=30)

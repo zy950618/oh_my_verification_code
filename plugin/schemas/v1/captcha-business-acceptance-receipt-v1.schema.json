@@ -1,0 +1,243 @@
+{
+  "$defs": {
+    "AssertionResult": {
+      "additionalProperties": false,
+      "properties": {
+        "name": {
+          "title": "Name",
+          "type": "string"
+        },
+        "passed": {
+          "title": "Passed",
+          "type": "boolean"
+        },
+        "expected": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Expected"
+        },
+        "observed": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Observed"
+        }
+      },
+      "required": [
+        "name",
+        "passed"
+      ],
+      "title": "AssertionResult",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "fact_level": {
+          "$ref": "#/$defs/FactLevel",
+          "default": "unverified"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "uri"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FactClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/FactLevel"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim",
+        "level"
+      ],
+      "title": "FactClaim",
+      "type": "object"
+    },
+    "FactLevel": {
+      "enum": [
+        "observed",
+        "derived",
+        "assumed",
+        "unverified"
+      ],
+      "title": "FactLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-business-acceptance-receipt/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "receipt_id": {
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "authorization_id": {
+      "title": "Authorization Id",
+      "type": "string"
+    },
+    "attempt_id": {
+      "title": "Attempt Id",
+      "type": "string"
+    },
+    "challenge_instance_id": {
+      "title": "Challenge Instance Id",
+      "type": "string"
+    },
+    "provider_verification_receipt_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Provider Verification Receipt Id"
+    },
+    "business_endpoint_id": {
+      "title": "Business Endpoint Id",
+      "type": "string"
+    },
+    "transport_status": {
+      "title": "Transport Status",
+      "type": "integer"
+    },
+    "response_assertions": {
+      "items": {
+        "$ref": "#/$defs/AssertionResult"
+      },
+      "title": "Response Assertions",
+      "type": "array"
+    },
+    "ledger_assertions": {
+      "items": {
+        "$ref": "#/$defs/AssertionResult"
+      },
+      "title": "Ledger Assertions",
+      "type": "array"
+    },
+    "owner_id_hash": {
+      "title": "Owner Id Hash",
+      "type": "string"
+    },
+    "session_id_hash": {
+      "title": "Session Id Hash",
+      "type": "string"
+    },
+    "worker_id": {
+      "title": "Worker Id",
+      "type": "string"
+    },
+    "object_id": {
+      "title": "Object Id",
+      "type": "string"
+    },
+    "object_version": {
+      "title": "Object Version",
+      "type": "string"
+    },
+    "negative_control_ledger_delta": {
+      "default": 0,
+      "title": "Negative Control Ledger Delta",
+      "type": "integer"
+    },
+    "repeat_round": {
+      "minimum": 1,
+      "title": "Repeat Round",
+      "type": "integer"
+    },
+    "accepted_at": {
+      "format": "date-time",
+      "title": "Accepted At",
+      "type": "string"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/FactClaim"
+      },
+      "title": "Facts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "receipt_id",
+    "authorization_id",
+    "attempt_id",
+    "challenge_instance_id",
+    "business_endpoint_id",
+    "transport_status",
+    "response_assertions",
+    "ledger_assertions",
+    "owner_id_hash",
+    "session_id_hash",
+    "worker_id",
+    "object_id",
+    "object_version",
+    "repeat_round",
+    "accepted_at"
+  ],
+  "title": "BusinessAcceptanceReceipt",
+  "type": "object"
+}

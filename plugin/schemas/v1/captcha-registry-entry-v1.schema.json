@@ -1,0 +1,153 @@
+{
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-registry-entry/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "entry_type": {
+      "enum": [
+        "solver",
+        "model",
+        "dataset",
+        "action",
+        "target"
+      ],
+      "title": "Entry Type",
+      "type": "string"
+    },
+    "entry_id": {
+      "title": "Entry Id",
+      "type": "string"
+    },
+    "version": {
+      "title": "Version",
+      "type": "string"
+    },
+    "lifecycle_state": {
+      "enum": [
+        "experimental",
+        "candidate",
+        "active",
+        "deprecated",
+        "disabled"
+      ],
+      "title": "Lifecycle State",
+      "type": "string"
+    },
+    "capabilities": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Capabilities",
+      "type": "array"
+    },
+    "supported_challenge_families": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Supported Challenge Families",
+      "type": "array"
+    },
+    "input_schema": {
+      "title": "Input Schema",
+      "type": "string"
+    },
+    "output_schema": {
+      "title": "Output Schema",
+      "type": "string"
+    },
+    "import_path": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Import Path"
+    },
+    "artifact_uri": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Artifact Uri"
+    },
+    "sha256": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Sha256"
+    },
+    "latency_class": {
+      "default": "standard",
+      "enum": [
+        "interactive",
+        "standard",
+        "batch"
+      ],
+      "title": "Latency Class",
+      "type": "string"
+    },
+    "concurrency_safe": {
+      "default": false,
+      "title": "Concurrency Safe",
+      "type": "boolean"
+    },
+    "authorization_scopes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Authorization Scopes",
+      "type": "array"
+    },
+    "deprecated_by": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Deprecated By"
+    },
+    "health_status": {
+      "default": "unknown",
+      "enum": [
+        "unknown",
+        "ready",
+        "failed"
+      ],
+      "title": "Health Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "entry_type",
+    "entry_id",
+    "version",
+    "lifecycle_state",
+    "capabilities",
+    "input_schema",
+    "output_schema"
+  ],
+  "title": "RegistryEntry",
+  "type": "object"
+}

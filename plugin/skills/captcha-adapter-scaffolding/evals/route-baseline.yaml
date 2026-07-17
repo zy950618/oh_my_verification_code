@@ -1,0 +1,18 @@
+id: captcha-adapter-scaffolding-route-baseline
+skill: captcha-adapter-scaffolding
+intent: route
+input:
+  fixture_type: file-backed fixture
+  positive_prompts:
+  - generate target interface
+  - scaffold adapter
+  - create adapter tests
+  negative_prompts:
+  - run target
+  - automatic browser interaction
+expected:
+  route: captcha-adapter-scaffolding
+  fact_labels_required: true
+  business_success_requires_first_party_receipt: true
+  release_candidate_availability: available_generate_only
+  generated_artifacts: generated_not_executed

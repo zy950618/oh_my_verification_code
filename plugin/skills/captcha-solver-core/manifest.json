@@ -1,0 +1,41 @@
+{
+  "schema_version": "skill-manifest/v1",
+  "name": "captcha-solver-core",
+  "owner": "zhaoyang",
+  "version": "1.0.0-rc.1",
+  "lifecycle": "library",
+  "review_cadence": "quarterly",
+  "input_files": "file-backed fixture",
+  "output_contract": [
+    "prediction contract validation",
+    "registry decision",
+    "missing implementation evidence"
+  ],
+  "rollback_boundary": "Revert this Skill package and its registry entry without deleting evidence or private overlays.",
+  "trigger_surface": {
+    "should_trigger": [
+      "classify challenge",
+      "solve image",
+      "solver registry"
+    ],
+    "should_not_trigger": [
+      "browser execution",
+      "business acceptance"
+    ],
+    "near_neighbors": [
+      "other captcha-verification-skills routes"
+    ]
+  },
+  "risk": {
+    "level": "medium",
+    "missing_evidence": [
+      "live provider benchmark",
+      "external approval telemetry"
+    ]
+  },
+  "release_candidate_boundary": {
+    "availability": "blocked_without_external_implementation",
+    "generated_artifacts": "not_applicable",
+    "summary": "Defines and validates prediction contracts and registry decisions; no classifier or solver implementation is bundled."
+  }
+}

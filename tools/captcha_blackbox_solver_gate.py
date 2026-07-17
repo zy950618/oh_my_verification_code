@@ -67,13 +67,13 @@ def audit_row(row: dict[str, Any], source: str) -> list[dict[str, Any]]:
 
 def update_evidence(run_id: str, status: str, report_path: Path) -> None:
     for path in (
-        ROOT / "public-range-evidence" / "local-gocaptcha-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "gocaptcha-local" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "gocaptcha-official" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "opencaptchaworld" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "shumei-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "aliyun-compatible-lab" / f"{run_id}.json",
-        ROOT / "public-range-evidence" / "five-second-shield-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "local-gocaptcha-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "gocaptcha-local" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "gocaptcha-official" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "opencaptchaworld" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "shumei-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "aliyun-compatible-lab" / f"{run_id}.json",
+        ROOT / "evidence" / "public-range" / "five-second-shield-lab" / f"{run_id}.json",
     ):
         if not path.is_file():
             continue
@@ -105,15 +105,15 @@ def main() -> int:
     args = parser.parse_args()
     run_id = args.run_id
     candidate_paths = [
-        ROOT / "public-range-evidence" / "raw" / "local-gocaptcha-compatible-lab" / run_id / "gocaptcha-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "gocaptcha-local" / run_id / "gocaptcha-action-replay-metrics.json",
-        ROOT / "public-range-evidence" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "shumei-compatible-lab" / run_id / "shumei-compatible-lab-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "aliyun-compatible-lab" / run_id / "aliyun-compatible-lab-action-replay-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "five-second-shield-lab" / run_id / "five-second-shield-action-records.jsonl",
-        ROOT / "public-range-evidence" / "raw" / "captcha-vision-lab" / run_id / "baseline-predictions.json",
-        ROOT / "public-range-evidence" / "raw" / "captcha-vision-lab" / run_id / "trained-predictions.json",
+        ROOT / "evidence" / "public-range" / "raw" / "local-gocaptcha-compatible-lab" / run_id / "gocaptcha-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "gocaptcha-local" / run_id / "gocaptcha-action-replay-metrics.json",
+        ROOT / "evidence" / "public-range" / "raw" / "gocaptcha-official" / run_id / "gocaptcha-official-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "opencaptchaworld" / run_id / "opencaptchaworld-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "shumei-compatible-lab" / run_id / "shumei-compatible-lab-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "aliyun-compatible-lab" / run_id / "aliyun-compatible-lab-action-replay-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "five-second-shield-lab" / run_id / "five-second-shield-action-records.jsonl",
+        ROOT / "evidence" / "public-range" / "raw" / "captcha-vision-lab" / run_id / "baseline-predictions.json",
+        ROOT / "evidence" / "public-range" / "raw" / "captcha-vision-lab" / run_id / "trained-predictions.json",
     ]
     checked_rows = 0
     failures: list[dict[str, Any]] = []
@@ -149,7 +149,7 @@ def main() -> int:
             "stable_allowed": status == "PASS",
         },
     }
-    out = ROOT / "public-range-evidence" / "raw" / "captcha-blackbox-gate" / run_id / "blackbox-gate.json"
+    out = ROOT / "evidence" / "public-range" / "raw" / "captcha-blackbox-gate" / run_id / "blackbox-gate.json"
     write_json(out, report)
     update_evidence(run_id, status, out)
     print(json.dumps({"status": status, "run_id": run_id, "report_path": str(out), "checked_rows": checked_rows, "failure_count": len(failures)}, ensure_ascii=False, indent=2))

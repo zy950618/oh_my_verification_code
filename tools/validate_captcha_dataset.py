@@ -13,7 +13,7 @@ from pathlib import Path
 ALLOWED_LICENSE_SCOPES = {"authorized_public_lab", "local_synthetic", "owned_target"}
 ALLOWED_SPLITS = {"train", "validation", "test"}
 SENSITIVE_KEYS = {"token", "cookie", "password", "secret", "session_id"}
-DEFAULT_MANIFEST = Path("public-range-evidence/captcha-model-lab/manifests/dataset_manifest.json")
+DEFAULT_MANIFEST = Path("evidence/public-range/captcha-model-lab/manifests/dataset_manifest.json")
 
 
 def fail(message: str) -> None:

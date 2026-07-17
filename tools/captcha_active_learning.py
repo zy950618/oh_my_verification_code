@@ -8,7 +8,7 @@ def main() -> int:
     parser = argparse.ArgumentParser()
     parser.add_argument("--run-id", required=True)
     args = parser.parse_args()
-    path = ROOT / "public-range-evidence" / "raw" / "captcha-vision-lab" / args.run_id / "failure-cases.json"
+    path = ROOT / "evidence" / "public-range" / "raw" / "captcha-vision-lab" / args.run_id / "failure-cases.json"
     data = json.loads(path.read_text(encoding="utf-8-sig"))
     counts = {k: len(v) for k, v in data.get("failure_cases", {}).items()}
     print(json.dumps({"status": "PASS", "next_training_targets": counts, "recommendation": "prioritize text segmentation and slider hard distractor rejection"}, indent=2))

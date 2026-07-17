@@ -32,7 +32,8 @@ def main() -> int:
         "dataset_id": manifest["dataset_id"],
         "created_at": utc_now(),
         "label_count": len(labels),
-        "label_source": "manually_labeled_training_sample",
+        "label_source": "mixed_from_samples",
+        "label_sources": sorted({str(item["label_source"]) for item in labels}),
         "labeler": "local_flywheel_rule_labeler",
         "forbidden_solver_sources": [
             "third_party_captcha_solving_platform",

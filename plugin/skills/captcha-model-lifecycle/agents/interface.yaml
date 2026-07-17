@@ -1,0 +1,15 @@
+interface_version: '1.0'
+name: captcha-model-lifecycle
+job_to_be_done: Audit dataset and model lifecycle contracts without claiming bundled training, evaluation, or packaging services.
+inputs:
+- structured request or file-backed fixture
+outputs:
+- lifecycle contract decision
+- evidence audit
+- missing implementation evidence
+authorization_boundary: provider-neutral; local, self-owned, official sandbox, or explicitly authorized scope only
+acceptance_evidence: first-party business receipt, business-data assertions, repeat gate, and negative-control ledger invariants
+  when business success is claimed
+release_candidate_boundary:
+  availability: blocked_without_external_implementation
+  generated_artifacts: not_applicable

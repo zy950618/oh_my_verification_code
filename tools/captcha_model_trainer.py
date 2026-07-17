@@ -114,11 +114,11 @@ def metrics(samples: list[dict[str, Any]], model: dict[str, Any] | None = None) 
             "prediction": pred,
             "expected_for_scoring": exp,
             "success": ok,
-            "solver_input_sources": ["challenge_image", "instruction_text", "allowed_actions_schema"],
+            "solver_input_sources": ["raw_svg", "instruction_text", "svg_data_name", "svg_geometry"],
             "label_read_for_prediction": False,
-            "dom_read_for_prediction": False,
+            "dom_read_for_prediction": True,
             "query_param_read_for_prediction": False,
-            "metadata_answer_read_for_prediction": False,
+            "metadata_answer_read_for_prediction": True,
             "server_expected_read_for_prediction": False,
             "action_replay_expected_read_for_prediction": False,
             "solver_source": dict(ALLOWED_SOLVER_SOURCE),
@@ -166,7 +166,10 @@ def main() -> int:
         "trained_at": utc_now(),
         "observed_colors": observed_colors,
         "fallback_color": observed_colors[0] if observed_colors else "blue",
-        "inference_sources": ["challenge_image", "instruction_text", "allowed_action_schema"],
+        "inference_sources": ["raw_svg", "instruction_text", "svg_data_name", "svg_geometry"],
+        "raster_only": False,
+        "leakage_status": "known_semantic_metadata_leakage",
+        "capability_eligible": False,
         "route_components": ["PaddleOCR_or_PP-OCRv5", "CRNN_CTC", "OpenCV_preprocess_baseline"] if args.task == "ocr_sequence_model" else [],
         "route_status": "integrated_training_needed" if args.task == "ocr_sequence_model" and not samples else "trained_local_route",
         "external_api_used": False,
@@ -199,8 +202,8 @@ def main() -> int:
             "failure_after": test_metrics["sample_count"] - test_metrics["success_count"],
             "action_replay_before": None,
             "action_replay_after": None,
-            "promotion_decision": "training_improved" if test_metrics["success_rate"] > baseline_test["success_rate"] else "training_needed",
-            "why_not_promoted": "model metrics alone cannot promote; action replay, blackbox, leakage, and scope gates are required",
+            "promotion_decision": "negative_eval_only",
+            "why_not_promoted": "known semantic metadata leakage: this legacy parser reads SVG data-name and geometry instead of raster pixels",
         },
         "solver_source": {**ALLOWED_SOLVER_SOURCE, "model_id": model_id},
     }
@@ -218,10 +221,12 @@ def main() -> int:
         "local_only": True,
         "external_api_used": False,
         "third_party_solver_used": False,
-        "label_leakage": False,
+        "label_leakage": True,
+        "leakage_status": "known_semantic_metadata_leakage",
+        "capability_eligible": False,
     })
-    print(json.dumps({"status": "PASS", "run_id": args.run_id, "task": args.task, "checkpoint_path": str(checkpoint), "training_result": str(result_path), "model_registry": str(registry_path), "delta": result["model_training_result"]["delta"]}, ensure_ascii=False, indent=2))
-    return 0
+    print(json.dumps({"status": "NEGATIVE_EVAL_ONLY", "run_id": args.run_id, "task": args.task, "checkpoint_path": str(checkpoint), "training_result": str(result_path), "model_registry": str(registry_path), "delta": result["model_training_result"]["delta"], "leakage_status": "known_semantic_metadata_leakage"}, ensure_ascii=False, indent=2))
+    return 1
 
 
 if __name__ == "__main__":

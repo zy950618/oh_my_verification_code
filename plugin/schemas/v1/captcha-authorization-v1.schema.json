@@ -1,0 +1,189 @@
+{
+  "$defs": {
+    "AuthorizationBasis": {
+      "enum": [
+        "owned",
+        "written_contract",
+        "ticket",
+        "customer_controlled_integration",
+        "oral_claim"
+      ],
+      "title": "AuthorizationBasis",
+      "type": "string"
+    },
+    "AuthorizationStatus": {
+      "enum": [
+        "claimed_unverified",
+        "verified",
+        "expired",
+        "revoked",
+        "rejected"
+      ],
+      "title": "AuthorizationStatus",
+      "type": "string"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "fact_level": {
+          "$ref": "#/$defs/FactLevel",
+          "default": "unverified"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "uri"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FactLevel": {
+      "enum": [
+        "observed",
+        "derived",
+        "assumed",
+        "unverified"
+      ],
+      "title": "FactLevel",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-authorization/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "authorization_id": {
+      "title": "Authorization Id",
+      "type": "string"
+    },
+    "subject": {
+      "title": "Subject",
+      "type": "string"
+    },
+    "controller": {
+      "title": "Controller",
+      "type": "string"
+    },
+    "target_environment_id": {
+      "title": "Target Environment Id",
+      "type": "string"
+    },
+    "allowed_hosts": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Hosts",
+      "type": "array"
+    },
+    "allowed_routes": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Routes",
+      "type": "array"
+    },
+    "allowed_methods": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Methods",
+      "type": "array"
+    },
+    "allowed_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Allowed Actions",
+      "type": "array"
+    },
+    "prohibited_actions": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Prohibited Actions",
+      "type": "array"
+    },
+    "basis": {
+      "$ref": "#/$defs/AuthorizationBasis"
+    },
+    "status": {
+      "$ref": "#/$defs/AuthorizationStatus"
+    },
+    "fact_level": {
+      "$ref": "#/$defs/FactLevel"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "issued_at": {
+      "format": "date-time",
+      "title": "Issued At",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "revocation_contact": {
+      "title": "Revocation Contact",
+      "type": "string"
+    },
+    "data_handling_scope": {
+      "title": "Data Handling Scope",
+      "type": "string"
+    },
+    "production_allowed": {
+      "default": false,
+      "title": "Production Allowed",
+      "type": "boolean"
+    },
+    "operator_acknowledged": {
+      "default": false,
+      "title": "Operator Acknowledged",
+      "type": "boolean"
+    }
+  },
+  "required": [
+    "authorization_id",
+    "subject",
+    "controller",
+    "target_environment_id",
+    "basis",
+    "status",
+    "fact_level",
+    "issued_at",
+    "expires_at",
+    "revocation_contact",
+    "data_handling_scope"
+  ],
+  "title": "AuthorizationRecord",
+  "type": "object"
+}

@@ -1,0 +1,41 @@
+{
+  "schema_version": "skill-manifest/v1",
+  "name": "captcha-authorized-flow",
+  "owner": "zhaoyang",
+  "version": "1.0.0-rc.1",
+  "lifecycle": "governed",
+  "review_cadence": "quarterly",
+  "input_files": "file-backed fixture",
+  "output_contract": [
+    "authorization decision",
+    "supplied receipt validation",
+    "promotion decision"
+  ],
+  "rollback_boundary": "Revert this Skill package and its registry entry without deleting evidence or private overlays.",
+  "trigger_surface": {
+    "should_trigger": [
+      "authorization review",
+      "business acceptance gate",
+      "repeat verification"
+    ],
+    "should_not_trigger": [
+      "isolated image prediction",
+      "dataset training"
+    ],
+    "near_neighbors": [
+      "other captcha-verification-skills routes"
+    ]
+  },
+  "risk": {
+    "level": "high",
+    "missing_evidence": [
+      "live provider benchmark",
+      "external approval telemetry"
+    ]
+  },
+  "release_candidate_boundary": {
+    "availability": "blocked_without_external_implementation",
+    "generated_artifacts": "not_applicable",
+    "summary": "Validates supplied authorization and receipt contracts; it does not collect receipts or execute targets."
+  }
+}

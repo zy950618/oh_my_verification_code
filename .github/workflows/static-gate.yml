@@ -1,4 +1,4 @@
-name: Captcha Project Static Gate
+name: CAPTCHA Verification Skills Gates
 
 on:
   pull_request:
@@ -10,26 +10,111 @@ permissions:
   contents: read
 
 jobs:
-  static-gate:
+  package-and-test:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.11', '3.12']
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: ${{ matrix.python-version }}
+          cache: pip
+      - name: Install core, transports, and test dependencies
+        run: python -m pip install './plugin[dev,fastapi,mcp]'
+      - name: Compile Python sources
+        run: python -m compileall -q plugin/src tools tests
+      - name: Run contract, boundary, and governance tests
+        run: pytest plugin/tests tests -W error --cov=captcha_verification --cov-report=term-missing
+      - name: Verify committed schemas match canonical contracts
+        run: |
+          rm -rf /tmp/captcha-schemas
+          captcha-skills export-schemas /tmp/captcha-schemas
+          diff -ru plugin/schemas/v1 /tmp/captcha-schemas
+      - name: Build package artifacts
+        run: python -m build plugin
+      - name: Verify Python wheel boundary
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import zipfile
+          wheel = next(Path('plugin/dist').glob('*.whl'))
+          with zipfile.ZipFile(wheel) as archive:
+              names = archive.namelist()
+          assert any('/templates/target-adapter/' in name for name in names)
+          assert not any(name.startswith(('private/', 'evidence/', 'experience/')) for name in names)
+          assert not any('/skills/' in name or '/.claude-plugin/' in name for name in names)
+          PY
+      - name: Smoke install built wheel
+        run: |
+          python -m venv /tmp/captcha-wheel-smoke
+          /tmp/captcha-wheel-smoke/bin/python -m pip install plugin/dist/*.whl
+          /tmp/captcha-wheel-smoke/bin/python -c 'import captcha_verification'
+          /tmp/captcha-wheel-smoke/bin/captcha-skills --help
+          set +e
+          /tmp/captcha-wheel-smoke/bin/captcha-skills solve >/tmp/captcha-solve.json
+          code=$?
+          set -e
+          test "$code" -eq 4
+          /tmp/captcha-wheel-smoke/bin/python -c 'import json; p=json.load(open("/tmp/captcha-solve.json")); assert p["operation_status"] == "blocked"'
+
+  skill-and-plugin:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - name: Setup Python
-        uses: actions/setup-python@v5
+      - uses: actions/setup-python@v5
         with:
           python-version: '3.11'
-      - name: Check no raw sensitive artifacts
+      - name: Install YAML validator
+        run: python -m pip install PyYAML
+      - name: Validate Skill packages
+        run: |
+          python - <<'PY'
+          from pathlib import Path
+          import json, yaml
+          skills = sorted(Path('plugin/skills').glob('*/SKILL.md'))
+          assert len(skills) == 6
+          for path in skills:
+              text = path.read_text(encoding='utf-8')
+              _, front, body = text.split('---', 2)
+              metadata = yaml.safe_load(front)
+              assert metadata['name'] == path.parent.name
+              assert 1 <= len(metadata['description']) <= 1024
+              assert len(text.splitlines()) < 500
+              assert '## Release candidate boundary' in body
+              assert '## Output contract' in body
+              assert '## References' in body
+              manifest = json.loads((path.parent / 'manifest.json').read_text())
+              assert manifest['name'] == path.parent.name
+              assert manifest['input_files'] == 'file-backed fixture'
+              assert manifest['output_contract']
+              assert manifest['rollback_boundary']
+              assert manifest['release_candidate_boundary']['availability']
+              for reference in (path.parent / 'references').glob('*.md'):
+                  assert f'references/{reference.name}' in text
+          PY
+      - name: Validate plugin manifest JSON
+        run: python -m json.tool plugin/.claude-plugin/plugin.json >/dev/null
+      - name: Check canonical executable paths
+        run: |
+          ! grep -R -n -E 'ROOT / "public-range-evidence"|Path\("public-range-evidence"\)|Path\("skills-experience"\)|default="public-range-labs' tools --include='*.py'
+      - name: Check private and sensitive artifacts
         run: |
           set -euo pipefail
-          BAD=$(find . -type f \( -name '*.har' -o -name '*.cookies' -o -name '*.tokens' -o -name '*.pt' -o -name '*.onnx' -o -name '*.safetensors' \) || true)
+          BAD=$(find . -path './.git' -prune -o -path './.venv' -prune -o -path './plugin/dist' -prune -o -type f \( -name '*.har' -o -name '*.cookies' -o -name '*.cookie' -o -name '*.tokens' -o -name '*.token' -o -name '*.pt' -o -name '*.pth' -o -name '*.onnx' -o -name '*.safetensors' -o -name '*.pkl' -o -name '*.joblib' \) -print)
           if [ -n "$BAD" ]; then
-            echo "Sensitive or large artifacts must not be committed:"
-            echo "$BAD"
+            printf 'Sensitive or large artifacts must not be committed:\n%s\n' "$BAD"
             exit 1
           fi
-      - name: Check required docs
+          test ! -d private
+      - name: Check required governance files
         run: |
           test -f README.md
           test -f CLAUDE.md
-          test -f docs/captcha-type-matrix-and-api-contract.md
-          test -f docs/migration-from-oh-my-reverse-skill.md
+          test -f MIGRATION.md
+          test -f migration/skill-names.yaml
+          test -f migration/legacy-locators.jsonl
+          test -f reports/trust_report.md
+          test -f reports/output-risk-profile.md
+          test -f reports/output_quality_scorecard.md

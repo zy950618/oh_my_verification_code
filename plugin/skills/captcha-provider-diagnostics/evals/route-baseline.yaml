@@ -1,0 +1,18 @@
+id: captcha-provider-diagnostics-route-baseline
+skill: captcha-provider-diagnostics
+intent: route
+input:
+  fixture_type: file-backed fixture
+  positive_prompts:
+  - provider detection
+  - site binding
+  - verify versus business API
+  negative_prompts:
+  - action replay
+  - model training
+expected:
+  route: captcha-provider-diagnostics
+  fact_labels_required: true
+  business_success_requires_first_party_receipt: true
+  release_candidate_availability: blocked_without_external_implementation
+  generated_artifacts: not_applicable

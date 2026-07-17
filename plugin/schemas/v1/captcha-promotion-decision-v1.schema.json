@@ -1,0 +1,112 @@
+{
+  "$defs": {
+    "BusinessAcceptanceStatus": {
+      "enum": [
+        "not_attempted",
+        "accepted",
+        "rejected",
+        "inconsistent"
+      ],
+      "title": "BusinessAcceptanceStatus",
+      "type": "string"
+    },
+    "FactClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/FactLevel"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim",
+        "level"
+      ],
+      "title": "FactClaim",
+      "type": "object"
+    },
+    "FactLevel": {
+      "enum": [
+        "observed",
+        "derived",
+        "assumed",
+        "unverified"
+      ],
+      "title": "FactLevel",
+      "type": "string"
+    },
+    "PromotionStatus": {
+      "enum": [
+        "ineligible",
+        "negative_only",
+        "candidate",
+        "approved"
+      ],
+      "title": "PromotionStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-promotion-decision/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/PromotionStatus"
+    },
+    "business_acceptance_status": {
+      "$ref": "#/$defs/BusinessAcceptanceStatus"
+    },
+    "authorization_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Authorization Id"
+    },
+    "receipt_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Receipt Ids",
+      "type": "array"
+    },
+    "blockers": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Blockers",
+      "type": "array"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/FactClaim"
+      },
+      "title": "Facts",
+      "type": "array"
+    }
+  },
+  "required": [
+    "status",
+    "business_acceptance_status"
+  ],
+  "title": "PromotionDecision",
+  "type": "object"
+}

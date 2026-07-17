@@ -153,7 +153,7 @@ def action_record(kind: str, sample: dict[str, Any], challenge_instance_id: str)
         "prediction": prediction,
         "expected": expected,
         "action_trace": {"solver": "captcha_vision_baseline_solver", "input": "challenge_image_crop", "threshold": threshold},
-        "feedback_state": "backend_accepted" if success else "backend_rejected",
+        "feedback_state": "local_metric_pass" if success else "local_metric_fail",
         "success": success,
         "failure_reason": "" if success else f"error {error:.3f} exceeded threshold {threshold:.3f}",
         "error": error,
@@ -362,7 +362,7 @@ async def run_gocaptcha_target(args: argparse.Namespace) -> dict[str, Any]:
     run_id = args.run_id
     if not run_id:
         raise RuntimeError("--run-id is required with --target")
-    manifest_path = Path("public-range-evidence") / "raw" / "captcha-vision-lab" / run_id / "dataset-manifest.json"
+    manifest_path = Path("evidence/public-range") / "raw" / "captcha-vision-lab" / run_id / "dataset-manifest.json"
     if not manifest_path.is_file():
         raise RuntimeError(f"missing dataset manifest for target replay: {manifest_path}")
     manifest = read_json(manifest_path)
@@ -545,8 +545,8 @@ async def run_gocaptcha_target(args: argparse.Namespace) -> dict[str, Any]:
         "capture_id": f"cap-{run_id}-gocaptcha-local",
         "captured_at": ended_at,
         "source_freshness": "fresh",
-        "execution_status": "REAL_EXECUTION_PASS",
-        "control_flow_status": "CONTROL_FLOW_PASS" if replay_metrics["action_success"] else "CONTROL_FLOW_FAIL",
+        "execution_status": "REAL_EXECUTION_PASS" if action_success else "REAL_EXECUTION_FAIL",
+        "control_flow_status": "CONTROL_FLOW_PASS" if action_success else "CONTROL_FLOW_FAIL",
         "business_data_status": "NOT_RUN",
         "capability_status": "positive_allowed" if action_success else "negative_eval_only",
         "target": {
@@ -561,7 +561,7 @@ async def run_gocaptcha_target(args: argparse.Namespace) -> dict[str, Any]:
         "execution_proof": {
             "command": f"python tools\\captcha_action_replay_lab.py --target gocaptcha-local --run-id {run_id}",
             "cwd": str(Path.cwd()),
-            "exit_code": 0,
+            "exit_code": 0 if action_success else 1,
             "started_at": started_at,
             "ended_at": ended_at,
             "stdout_log": str(stdout_log.resolve()),
@@ -625,7 +625,7 @@ async def run_gocaptcha_target(args: argparse.Namespace) -> dict[str, Any]:
     evidence_dir.mkdir(parents=True, exist_ok=True)
     evidence_path = evidence_dir / f"{run_id}.json"
     write_json(evidence_path, evidence)
-    card_dir = Path("skills-experience") / "public-range-action-replay" / run_id
+    card_dir = Path("experience/skills-experience") / "public-range-action-replay" / run_id
     card_dir.mkdir(parents=True, exist_ok=True)
     card = card_dir / "gocaptcha-local-action-replay.yaml"
     card.write_text("\n".join([
@@ -640,7 +640,7 @@ async def run_gocaptcha_target(args: argparse.Namespace) -> dict[str, Any]:
         "",
     ]), encoding="utf-8")
     stdout_log.write_text("gocaptcha-local action replay completed\n", encoding="utf-8")
-    print(json.dumps({"status": "PASS", "run_id": run_id, "target": "gocaptcha-local", "action_success": replay_metrics["action_success"], "evidence_path": str(evidence_path)}, ensure_ascii=False, indent=2))
+    print(json.dumps({"status": "PASS" if replay_metrics["action_success"] else "FAIL", "run_id": run_id, "target": "gocaptcha-local", "action_success": replay_metrics["action_success"], "evidence_path": str(evidence_path)}, ensure_ascii=False, indent=2))
     return evidence
 
 
@@ -677,7 +677,7 @@ async def run_gocaptcha_batch_target(args: argparse.Namespace, manifest: dict[st
     network_path = raw_dir / "gocaptcha-network-summary.json"
     write_json(network_path, smoke_evidence["network"])
     replay_metrics = {
-        "status": "pass" if records else "fail",
+        "status": "pass" if threshold_pass else "fail",
         "target": "local-gocaptcha-compatible-lab",
         "target_authenticity": {
             "uses_real_gocaptcha_component": False,
@@ -698,7 +698,7 @@ async def run_gocaptcha_batch_target(args: argparse.Namespace, manifest: dict[st
         "query_param_read_for_prediction": False,
         "metadata_answer_read_for_prediction": False,
         "server_expected_read_for_prediction": False,
-        "action_success": bool(records),
+        "action_success": threshold_pass,
     }
     (raw_dir / "gocaptcha-action-replay-records.jsonl").write_text(
         "\n".join(json.dumps(row, ensure_ascii=False) for row in records) + "\n",
@@ -707,14 +707,14 @@ async def run_gocaptcha_batch_target(args: argparse.Namespace, manifest: dict[st
     write_json(raw_dir / "gocaptcha-action-replay-failure-cases.json", {"run_id": run_id, "failure_cases": failure_cases[:200]})
     write_json(metrics_path, {"run_id": run_id, "metrics": replay_metrics})
 
-    candidate = bool(records)
+    candidate = threshold_pass
     evidence = {
         "schema_version": "public-range-evidence/v1",
         "run_id": run_id,
         "capture_id": f"cap-{run_id}-local-gocaptcha-compatible-lab",
         "captured_at": ended_at,
         "source_freshness": "fresh",
-        "execution_status": "REAL_EXECUTION_PASS",
+        "execution_status": "REAL_EXECUTION_PASS" if candidate else "REAL_EXECUTION_FAIL",
         "control_flow_status": "CONTROL_FLOW_PASS" if candidate else "CONTROL_FLOW_FAIL",
         "business_data_status": "NOT_RUN",
         "capability_status": "positive_candidate" if candidate else "negative_eval_only",
@@ -730,7 +730,7 @@ async def run_gocaptcha_batch_target(args: argparse.Namespace, manifest: dict[st
         "execution_proof": {
             "command": f"python tools\\captcha_action_replay_lab.py --target gocaptcha-local --run-id {run_id} --samples-per-type {samples_per_type} --difficulty {args.difficulty}",
             "cwd": str(Path.cwd()),
-            "exit_code": 0,
+            "exit_code": 0 if candidate else 1,
             "started_at": started_at,
             "ended_at": ended_at,
             "stdout_log": str(stdout_log.resolve()),
@@ -777,7 +777,7 @@ async def run_gocaptcha_batch_target(args: argparse.Namespace, manifest: dict[st
             "path": str((Path(args.evidence_root) / "raw" / "captcha-blackbox-gate" / run_id / "blackbox-gate.json").resolve()),
         },
         "ui_api_parity": {
-            "status": "pass",
+            "status": "pass" if candidate else "fail",
             "observed_status": 200,
             "endpoint": "GET /gocaptcha-local smoke plus local batch verifier",
             "json_pointers": ["/action_replay/metrics/gocaptcha_action_replay_summary"],
@@ -787,7 +787,7 @@ async def run_gocaptcha_batch_target(args: argparse.Namespace, manifest: dict[st
             "skills_participation": "positive_candidate" if candidate else "negative_eval_only",
             "positive_allowed": False,
             "concurrency_positive": False,
-            "blocked_reason": "" if candidate else "No local-compatible action replay records produced.",
+            "blocked_reason": "" if candidate else "Local-compatible action replay records did not meet every required metric threshold.",
             "why_candidate": "Single-run local-compatible lab evidence; not real GoCaptcha, not verified/stable, not third-party capability.",
         },
     }
@@ -795,19 +795,19 @@ async def run_gocaptcha_batch_target(args: argparse.Namespace, manifest: dict[st
     evidence_dir.mkdir(parents=True, exist_ok=True)
     evidence_path = evidence_dir / f"{run_id}.json"
     write_json(evidence_path, evidence)
-    card_dir = Path("skills-experience") / "public-range-action-replay" / run_id
+    card_dir = Path("experience/skills-experience") / "public-range-action-replay" / run_id
     card_dir.mkdir(parents=True, exist_ok=True)
     (card_dir / "local-gocaptcha-compatible-lab-action-replay.yaml").write_text("\n".join([
         f"experience_id: {run_id}-local-gocaptcha-compatible-lab-action-replay",
         f"source_run_id: {run_id}",
         "target: local-gocaptcha-compatible-lab",
         "target_authenticity: self_owned_compatible_lab_not_real_gocaptcha",
-        "capability_status: positive_candidate",
+        f"capability_status: {evidence['capability_status']}",
         "next_promotion_requires: multi_seed_multi_round_blackbox_threshold_pass",
         "",
     ]), encoding="utf-8")
     stdout_log.write_text("local-gocaptcha-compatible-lab batch action replay completed\n", encoding="utf-8")
-    print(json.dumps({"status": "PASS", "run_id": run_id, "target": "local-gocaptcha-compatible-lab", "capability_status": evidence["capability_status"], "evidence_path": str(evidence_path)}, ensure_ascii=False, indent=2))
+    print(json.dumps({"status": "PASS" if candidate else "FAIL", "run_id": run_id, "target": "local-gocaptcha-compatible-lab", "capability_status": evidence["capability_status"], "evidence_path": str(evidence_path)}, ensure_ascii=False, indent=2))
     return evidence
 
 
@@ -879,9 +879,10 @@ async def replay(args: argparse.Namespace) -> dict[str, Any]:
 
     action_success = bool(browser_result["browser_state"].get("ok"))
     replay_metrics = {
+        "status": "pass" if action_success else "fail",
         "action_success_rate": 1.0 if action_success else 0.0,
         "state_transition_success_rate": 1.0 if browser_result["after_state"] == "state=backend_accepted" else 0.0,
-        "backend_acceptance_rate": 1.0 if action_success else 0.0,
+        "local_verifier_acceptance_rate": 1.0 if action_success else 0.0,
             "expected_offset": expected,
             "predicted_offset": offset,
             "abs_offset_error": abs(offset - expected),
@@ -897,8 +898,8 @@ async def replay(args: argparse.Namespace) -> dict[str, Any]:
         "capture_id": f"cap-{run_id}",
         "captured_at": ended_at,
         "source_freshness": "fresh",
-        "execution_status": "REAL_EXECUTION_PASS",
-        "control_flow_status": "CONTROL_FLOW_PASS",
+        "execution_status": "REAL_EXECUTION_PASS" if action_success else "REAL_EXECUTION_FAIL",
+        "control_flow_status": "CONTROL_FLOW_PASS" if action_success else "CONTROL_FLOW_FAIL",
         "business_data_status": "NOT_RUN",
         "capability_status": "memory_only",
         "target": {
@@ -933,7 +934,7 @@ async def replay(args: argparse.Namespace) -> dict[str, Any]:
         "execution_proof": {
             "command": f"python tools\\captcha_action_replay_lab.py --predictions {predictions_path} --metrics {metrics_path}",
             "cwd": str(Path.cwd()),
-            "exit_code": 0,
+            "exit_code": 0 if action_success else 1,
             "started_at": started_at,
             "ended_at": ended_at,
             "stdout_log": str(stdout_log.resolve()),
@@ -980,8 +981,8 @@ async def replay(args: argparse.Namespace) -> dict[str, Any]:
             "metrics_path": str(replay_metrics_path.resolve()),
         },
         "ui_api_parity": {
-            "status": "pass",
-            "observed_status": 200,
+            "status": "pass" if action_success else "fail",
+            "observed_status": 200 if action_success else 403,
             "endpoint": "GET /",
             "json_pointers": ["/action_replay/metrics/action_success_rate"],
             "note": "Local browser UI state transitioned using baseline recognition output; no business API ledger was run.",
@@ -1003,7 +1004,7 @@ async def replay(args: argparse.Namespace) -> dict[str, Any]:
             "why_not_positive": "No final business API and no server-side business ledger; benchmark accuracy cannot become real-site positive capability.",
         },
         "capability_boundary": {
-            "local_lab_positive": action_success,
+            "local_lab_metric_pass": action_success,
             "real_site_positive": False,
             "algorithm_benchmark_only": True,
             "third_party_captcha_waf_verified": False,
@@ -1014,7 +1015,7 @@ async def replay(args: argparse.Namespace) -> dict[str, Any]:
     evidence_path = evidence_dir / f"{run_id}.json"
     evidence_path.write_text(json.dumps(evidence, ensure_ascii=False, indent=2), encoding="utf-8")
     stdout_log.write_text("captcha action replay completed\n", encoding="utf-8")
-    print(json.dumps({"status": "PASS", "run_id": run_id, "evidence_path": str(evidence_path), "action_success": action_success}, ensure_ascii=False, indent=2))
+    print(json.dumps({"status": "PASS" if action_success else "FAIL", "run_id": run_id, "evidence_path": str(evidence_path), "action_success": action_success}, ensure_ascii=False, indent=2))
     return evidence
 
 
@@ -1024,18 +1025,20 @@ def main() -> int:
     parser.add_argument("--predictions")
     parser.add_argument("--metrics")
     parser.add_argument("--run-id")
-    parser.add_argument("--lab-dir", default="public-range-labs/captcha-vision-lab")
-    parser.add_argument("--evidence-root", default="public-range-evidence")
+    parser.add_argument("--lab-dir", default="labs/public-range-labs/captcha-vision-lab")
+    parser.add_argument("--evidence-root", default="evidence/public-range")
     parser.add_argument("--samples-per-type", type=int, default=0)
     parser.add_argument("--difficulty", default="easy")
     args = parser.parse_args()
     if args.target:
-        asyncio.run(run_gocaptcha_target(args))
+        result = asyncio.run(run_gocaptcha_target(args))
+        success = result.get("action_replay", {}).get("metrics", {}).get("action_success") is True
     else:
         if not args.predictions or not args.metrics:
             raise SystemExit("--predictions and --metrics are required unless --target is used")
-        asyncio.run(replay(args))
-    return 0
+        result = asyncio.run(replay(args))
+        success = result.get("action_replay", {}).get("status") == "pass"
+    return 0 if success else 1
 
 
 if __name__ == "__main__":

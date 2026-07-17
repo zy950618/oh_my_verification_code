@@ -1,0 +1,34 @@
+schema_version: "skill-migration/v1"
+introduced_in: "1.0.0-rc.1"
+runtime_aliases: false
+mappings:
+  - old_name: captcha-service-delivery
+    new_name: captcha-authorized-flow
+    behavior_change: Explicit authorization and first-party acceptance orchestration; no automatic target execution.
+  - old_name: captcha-provider-diagnostics
+    new_name: captcha-provider-diagnostics
+    behavior_change: Provider-neutral read-only diagnostics with canonical contracts.
+  - old_name: captcha-visual-recognition-lab
+    new_name: captcha-solver-core
+    behavior_change: Merged into leakage-safe normalized prediction workflow.
+  - old_name: captcha-open-source-model-stack
+    new_name: captcha-solver-core
+    behavior_change: Model-backed solver selection is a solver-core responsibility.
+  - old_name: captcha-algorithm-benchmark
+    new_name: captcha-model-lifecycle
+    behavior_change: Benchmarks are model lifecycle gates rather than a standalone route.
+  - old_name: captcha-dataset-flywheel
+    new_name: captcha-model-lifecycle
+    behavior_change: Merged with dataset provenance, training, evaluation, and registry promotion.
+  - old_name: captcha-image-dataset-governance
+    new_name: captcha-model-lifecycle
+    behavior_change: Merged with grouped split and leakage requirements.
+  - old_name: captcha-model-training
+    new_name: captcha-model-lifecycle
+    behavior_change: Training is one lifecycle stage and cannot imply promotion.
+  - old_name: captcha-action-planner
+    new_name: captcha-action-validation
+    behavior_change: Planning is non-executable by default and binds a versioned coordinate frame.
+  - old_name: captcha-model-action-e2e
+    new_name: captcha-action-validation
+    behavior_change: Driver execution ends at execution/provider receipts; business acceptance is owned by authorized-flow.
