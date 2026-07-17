@@ -8,11 +8,13 @@
     },
     "entry_type": {
       "enum": [
+        "classifier",
         "solver",
         "model",
         "dataset",
         "action",
-        "target"
+        "target",
+        "evidence"
       ],
       "title": "Entry Type",
       "type": "string"
@@ -136,6 +138,16 @@
         "failed"
       ],
       "title": "Health Status",
+      "type": "string"
+    },
+    "runtime_eligibility": {
+      "default": "documentation_only",
+      "enum": [
+        "positive_local_reference",
+        "negative_eval_only",
+        "documentation_only"
+      ],
+      "title": "Runtime Eligibility",
       "type": "string"
     }
   },

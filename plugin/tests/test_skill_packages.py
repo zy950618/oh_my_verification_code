@@ -27,6 +27,12 @@ def test_skill_packages_are_portable_and_references_exist() -> None:
         interface = yaml.safe_load((package / "agents" / "interface.yaml").read_text(encoding="utf-8"))
         manifest = json.loads((package / "manifest.json").read_text(encoding="utf-8"))
         route_eval = yaml.safe_load((package / "evals" / "route-baseline.yaml").read_text(encoding="utf-8"))
+        evals = [yaml.safe_load(path.read_text(encoding="utf-8")) for path in sorted((package / "evals").glob("*.yaml"))]
+        assert evals
+        for evaluation in evals:
+            assert evaluation["id"]
+            assert evaluation["skill"] == package.name
+            assert evaluation["expected"]
         assert interface["name"] == package.name
         assert manifest["name"] == package.name
         assert manifest["input_files"] == "file-backed fixture"
@@ -46,7 +52,7 @@ def test_skill_packages_are_portable_and_references_exist() -> None:
             assert boundary["generated_artifacts"] == "generated_not_executed"
             assert "never imports" in body
         else:
-            assert boundary["availability"] == "blocked_without_external_implementation"
+            assert boundary["availability"] == "local_reference_runtime_available"
             assert boundary["generated_artifacts"] == "not_applicable"
 
         for reference in (package / "references").glob("*.md"):

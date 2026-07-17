@@ -1,0 +1,246 @@
+{
+  "$defs": {
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "fact_level": {
+          "$ref": "#/$defs/FactLevel",
+          "default": "unverified"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "uri"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "FactLevel": {
+      "enum": [
+        "observed",
+        "derived",
+        "assumed",
+        "unverified"
+      ],
+      "title": "FactLevel",
+      "type": "string"
+    },
+    "ProviderVerificationStatus": {
+      "enum": [
+        "not_attempted",
+        "accepted",
+        "rejected",
+        "boundary_only"
+      ],
+      "title": "ProviderVerificationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-provider-verification-receipt/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "kind": {
+      "const": "provider_receipt",
+      "default": "provider_receipt",
+      "title": "Kind",
+      "type": "string"
+    },
+    "audience": {
+      "const": "first_party_business_api",
+      "default": "first_party_business_api",
+      "title": "Audience",
+      "type": "string"
+    },
+    "receipt_id": {
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "receipt_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Receipt Hash"
+    },
+    "parent_execution_receipt_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Execution Receipt Hash"
+    },
+    "plan_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Plan Hash"
+    },
+    "session_binding_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Session Binding Hash"
+    },
+    "challenge_instance_id": {
+      "title": "Challenge Instance Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ProviderVerificationStatus"
+    },
+    "provider": {
+      "title": "Provider",
+      "type": "string"
+    },
+    "transport_status": {
+      "anyOf": [
+        {
+          "type": "integer"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Transport Status"
+    },
+    "response_assertions_passed": {
+      "default": false,
+      "title": "Response Assertions Passed",
+      "type": "boolean"
+    },
+    "expected_action": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Action"
+    },
+    "observed_action": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed Action"
+    },
+    "expected_hostname": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expected Hostname"
+    },
+    "observed_hostname": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Observed Hostname"
+    },
+    "test_key_used": {
+      "default": false,
+      "title": "Test Key Used",
+      "type": "boolean"
+    },
+    "verified_at": {
+      "format": "date-time",
+      "title": "Verified At",
+      "type": "string"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expires At"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    }
+  },
+  "required": [
+    "receipt_id",
+    "challenge_instance_id",
+    "status",
+    "provider",
+    "verified_at"
+  ],
+  "title": "ProviderVerificationReceipt",
+  "type": "object"
+}

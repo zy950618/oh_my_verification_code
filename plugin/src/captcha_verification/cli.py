@@ -8,14 +8,21 @@ from pathlib import Path
 
 from pydantic import ValidationError
 
+from captcha_verification.actions import plan_action
+from captcha_verification.classification import classify
 from captcha_verification.contracts import (
     ActionPlan,
     AuthorizationRecord,
     BusinessAcceptanceReceipt,
+    ClassificationRequest,
     OperationStatus,
+    PlanActionRequest,
     ResultEnvelope,
+    SolveRequest,
     decide_promotion,
 )
+from captcha_verification.receipt_chain import run_local_e2e
+from captcha_verification.solvers import solve
 from captcha_verification.contracts.export import export_schemas
 from captcha_verification.registries import DEFAULT_REGISTRY
 from captcha_verification.services import ScaffoldSpec, build_scaffold, write_scaffold
@@ -61,8 +68,13 @@ def build_parser() -> argparse.ArgumentParser:
     promotion.add_argument("--repeat-required", type=int, default=2)
 
     for name in ("classify", "solve", "plan-action"):
-        placeholder = subcommands.add_parser(name)
-        placeholder.add_argument("arguments", nargs=argparse.REMAINDER)
+        runtime = subcommands.add_parser(name, help=f"Run the local reference {name} operation")
+        runtime.add_argument("--request", type=Path)
+
+    e2e = subcommands.add_parser("e2e-local", help="Run the self-owned local first-party receipt chain")
+    e2e.add_argument("--rounds", type=int, default=2)
+    e2e.add_argument("--negative-matrix", choices=["all"], default="all")
+    e2e.add_argument("--output", type=Path)
 
     scaffold = subcommands.add_parser("scaffold-target-adapter", help="Generate a private adapter engineering scaffold")
     scaffold.add_argument("--target-id", required=True)
@@ -130,7 +142,34 @@ def run(args: argparse.Namespace) -> int:
                 )
             )
             return 0
-        _print(ResultEnvelope(operation_status=OperationStatus.BLOCKED, request_id=request_id, result={"command": args.command}, missing_evidence=["command implementation is not available in this release candidate"]))
+        if args.command in {"classify", "solve", "plan-action"} and args.request is None:
+            _print(ResultEnvelope(operation_status=OperationStatus.BLOCKED, request_id=request_id, result={"command": args.command}, missing_evidence=["local fixture request file is required"]))
+            return 4
+        if args.command == "classify":
+            value = classify(ClassificationRequest.model_validate(_read_json(args.request)))
+            _print(ResultEnvelope(operation_status=OperationStatus.SUCCEEDED, request_id=request_id, result=value.model_dump(mode="json"), warnings=value.warnings))
+            return 0
+        if args.command == "solve":
+            value = solve(SolveRequest.model_validate(_read_json(args.request)))
+            status = OperationStatus.SUCCEEDED if value.status == "produced" else OperationStatus.BLOCKED
+            _print(ResultEnvelope(operation_status=status, request_id=request_id, result=value.model_dump(mode="json"), warnings=value.warnings))
+            return 0 if value.status == "produced" else 4
+        if args.command == "plan-action":
+            value = plan_action(PlanActionRequest.model_validate(_read_json(args.request)))
+            _print(ResultEnvelope(operation_status=OperationStatus.SUCCEEDED, request_id=request_id, result=value.model_dump(mode="json")))
+            return 0
+        if args.command == "e2e-local":
+            if args.rounds < 2:
+                raise ValueError("--rounds must be at least 2 to verify a fresh repeat")
+            value = run_local_e2e(rounds=args.rounds)
+            if args.output:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                args.output.write_text(json.dumps(value, ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            approved = value["promotion_decision"]["status"] == "approved" and value["negative_control_ledger_delta"] == 0
+            status = OperationStatus.SUCCEEDED if approved else OperationStatus.BLOCKED
+            _print(ResultEnvelope(operation_status=status, request_id=request_id, result=value))
+            return 0 if approved else 4
+        _print(ResultEnvelope(operation_status=OperationStatus.BLOCKED, request_id=request_id, result={"command": args.command}, missing_evidence=["command implementation is not available"]))
         return 4
     except (OSError, ValueError, ValidationError, json.JSONDecodeError) as exc:
         _print(ResultEnvelope(operation_status=OperationStatus.FAILED, request_id=request_id, errors=[{"code": "validation_error", "message": str(exc)}]))

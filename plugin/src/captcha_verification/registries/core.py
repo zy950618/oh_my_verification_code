@@ -3,6 +3,7 @@ from __future__ import annotations
 import importlib
 from collections.abc import Iterable
 
+from captcha_verification.canonical import artifact_hash
 from captcha_verification.contracts import RegistryEntry
 
 
@@ -40,6 +41,10 @@ class Registry:
     def validate_imports(self) -> list[str]:
         errors: list[str] = []
         for entry in self._entries.values():
+            if entry.runtime_eligibility == "negative_eval_only" and entry.lifecycle_state == "active":
+                errors.append(f"{entry.entry_id}: negative_eval_only entries cannot be active")
+            if entry.runtime_eligibility == "positive_local_reference" and not entry.sha256:
+                errors.append(f"{entry.entry_id}: local-reference entry is missing sha256")
             if not entry.import_path:
                 continue
             module_name, separator, attribute = entry.import_path.partition(":")
@@ -56,4 +61,113 @@ class Registry:
         return errors
 
 
-DEFAULT_REGISTRY = Registry()
+DEFAULT_REGISTRY = Registry(
+    [
+        RegistryEntry(
+            entry_type="classifier",
+            entry_id="reference-raster-classifier",
+            version="1.0.0",
+            lifecycle_state="active",
+            capabilities=["local_fixture_classification"],
+            supported_challenge_families=["slider", "rotate", "click"],
+            input_schema="captcha-classification-request/v1",
+            output_schema="captcha-classification/v1",
+            import_path="captcha_verification.classification:classify",
+            sha256=artifact_hash({"id": "reference-raster-classifier", "version": "1.0.0"}),
+            concurrency_safe=True,
+            authorization_scopes=["self_owned_local_reference"],
+            health_status="ready",
+            runtime_eligibility="positive_local_reference",
+        ),
+        *[
+            RegistryEntry(
+                entry_type="solver",
+                entry_id=f"reference-{family}-solver",
+                version="1.0.0",
+                lifecycle_state="active",
+                capabilities=[f"solve_{family}_fixture"],
+                supported_challenge_families=[family],
+                input_schema="captcha-solve-request/v1",
+                output_schema="captcha-prediction/v1",
+                import_path="captcha_verification.solvers.reference:solve",
+                sha256=artifact_hash({"id": f"reference-{family}-solver", "version": "1.0.0"}),
+                concurrency_safe=True,
+                authorization_scopes=["self_owned_local_reference"],
+                health_status="ready",
+                runtime_eligibility="positive_local_reference",
+            )
+            for family in ("slider", "rotate", "click")
+        ],
+        RegistryEntry(
+            entry_type="model",
+            entry_id="reference-raster-algorithms",
+            version="1.0.0",
+            lifecycle_state="active",
+            capabilities=["deterministic_algorithm_descriptor"],
+            supported_challenge_families=["slider", "rotate", "click"],
+            input_schema="raster/v1",
+            output_schema="captcha-prediction/v1",
+            sha256=artifact_hash({"id": "reference-raster-algorithms", "weights": False, "families": ["slider", "rotate", "click"]}),
+            authorization_scopes=["self_owned_local_reference"],
+            health_status="ready",
+            runtime_eligibility="positive_local_reference",
+        ),
+        RegistryEntry(
+            entry_type="dataset",
+            entry_id="reference-synthetic-raster",
+            version="reference-synthetic-raster-v1",
+            lifecycle_state="active",
+            capabilities=["development", "calibration", "holdout", "negative"],
+            supported_challenge_families=["slider", "rotate", "click"],
+            input_schema="captcha-fixture-manifest/v1",
+            output_schema="raster/v1",
+            sha256=artifact_hash({"generator": "reference-fixtures-v1", "families": ["slider", "rotate", "click"]}),
+            authorization_scopes=["self_owned_local_reference"],
+            health_status="ready",
+            runtime_eligibility="positive_local_reference",
+        ),
+        RegistryEntry(
+            entry_type="action",
+            entry_id="reference-action-planner",
+            version="1.0.0",
+            lifecycle_state="active",
+            capabilities=["non_executable_plan"],
+            supported_challenge_families=["slider", "rotate", "click"],
+            input_schema="captcha-plan-action-request/v1",
+            output_schema="captcha-action-plan/v1",
+            import_path="captcha_verification.actions.planner:plan_action",
+            sha256=artifact_hash({"id": "reference-action-planner", "version": "1.0.0"}),
+            concurrency_safe=True,
+            authorization_scopes=["self_owned_local_reference"],
+            health_status="ready",
+            runtime_eligibility="positive_local_reference",
+        ),
+        RegistryEntry(
+            entry_type="target",
+            entry_id="local-reference-runtime",
+            version="1.0.0",
+            lifecycle_state="active",
+            capabilities=["localhost_first_party_receipt_chain"],
+            supported_challenge_families=["slider", "rotate", "click"],
+            input_schema="captcha-authorization/v1",
+            output_schema="captcha-business-acceptance-receipt/v1",
+            sha256=artifact_hash({"id": "local-reference-runtime", "scope": "localhost"}),
+            authorization_scopes=["self_owned_local_reference"],
+            health_status="ready",
+            runtime_eligibility="positive_local_reference",
+        ),
+        RegistryEntry(
+            entry_type="evidence",
+            entry_id="local-reference-receipt-chain",
+            version="1.0.0",
+            lifecycle_state="candidate",
+            capabilities=["sanitized_hash_chain"],
+            input_schema="captcha-receipt-chain/v1",
+            output_schema="captcha-promotion-decision/v1",
+            sha256=artifact_hash({"id": "local-reference-receipt-chain", "version": "1.0.0"}),
+            authorization_scopes=["self_owned_local_reference"],
+            health_status="unknown",
+            runtime_eligibility="documentation_only",
+        ),
+    ]
+)

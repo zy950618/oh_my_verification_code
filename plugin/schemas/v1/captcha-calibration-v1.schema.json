@@ -1,0 +1,151 @@
+{
+  "$defs": {
+    "ArtifactBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "registry_kind": {
+          "enum": [
+            "classifier",
+            "solver",
+            "model",
+            "dataset",
+            "action",
+            "target",
+            "evidence"
+          ],
+          "title": "Registry Kind",
+          "type": "string"
+        },
+        "entry_id": {
+          "title": "Entry Id",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "artifact_hash": {
+          "title": "Artifact Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "registry_kind",
+        "entry_id",
+        "version",
+        "artifact_hash"
+      ],
+      "title": "ArtifactBinding",
+      "type": "object"
+    },
+    "CalibrationBin": {
+      "additionalProperties": false,
+      "properties": {
+        "minimum_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Minimum Score",
+          "type": "number"
+        },
+        "maximum_score": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Maximum Score",
+          "type": "number"
+        },
+        "samples": {
+          "minimum": 1,
+          "title": "Samples",
+          "type": "integer"
+        },
+        "successes": {
+          "minimum": 0,
+          "title": "Successes",
+          "type": "integer"
+        },
+        "calibrated_confidence": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Calibrated Confidence",
+          "type": "number"
+        },
+        "wilson_lower_bound": {
+          "maximum": 1,
+          "minimum": 0,
+          "title": "Wilson Lower Bound",
+          "type": "number"
+        }
+      },
+      "required": [
+        "minimum_score",
+        "maximum_score",
+        "samples",
+        "successes",
+        "calibrated_confidence",
+        "wilson_lower_bound"
+      ],
+      "title": "CalibrationBin",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-calibration/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "calibration_id": {
+      "title": "Calibration Id",
+      "type": "string"
+    },
+    "family": {
+      "title": "Family",
+      "type": "string"
+    },
+    "solver_binding": {
+      "$ref": "#/$defs/ArtifactBinding"
+    },
+    "dataset_binding": {
+      "$ref": "#/$defs/ArtifactBinding"
+    },
+    "preprocessing_version": {
+      "title": "Preprocessing Version",
+      "type": "string"
+    },
+    "preprocessing_hash": {
+      "title": "Preprocessing Hash",
+      "type": "string"
+    },
+    "bins": {
+      "items": {
+        "$ref": "#/$defs/CalibrationBin"
+      },
+      "title": "Bins",
+      "type": "array"
+    },
+    "artifact_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Artifact Hash"
+    }
+  },
+  "required": [
+    "calibration_id",
+    "family",
+    "solver_binding",
+    "dataset_binding",
+    "preprocessing_version",
+    "preprocessing_hash",
+    "bins"
+  ],
+  "title": "CalibrationArtifact",
+  "type": "object"
+}

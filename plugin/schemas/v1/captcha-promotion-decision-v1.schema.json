@@ -69,6 +69,11 @@
     "business_acceptance_status": {
       "$ref": "#/$defs/BusinessAcceptanceStatus"
     },
+    "scope": {
+      "default": "first_party_local_reference_only",
+      "title": "Scope",
+      "type": "string"
+    },
     "authorization_id": {
       "anyOf": [
         {
@@ -86,6 +91,13 @@
         "type": "string"
       },
       "title": "Receipt Ids",
+      "type": "array"
+    },
+    "challenge_instance_ids": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Challenge Instance Ids",
       "type": "array"
     },
     "blockers": {

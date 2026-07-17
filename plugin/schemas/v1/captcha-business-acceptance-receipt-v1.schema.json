@@ -121,9 +121,45 @@
       "title": "Schema Version",
       "type": "string"
     },
+    "kind": {
+      "const": "business_receipt",
+      "default": "business_receipt",
+      "title": "Kind",
+      "type": "string"
+    },
+    "audience": {
+      "const": "first_party_protected_data",
+      "default": "first_party_protected_data",
+      "title": "Audience",
+      "type": "string"
+    },
     "receipt_id": {
       "title": "Receipt Id",
       "type": "string"
+    },
+    "receipt_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Receipt Hash"
+    },
+    "parent_provider_receipt_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Parent Provider Receipt Hash"
     },
     "authorization_id": {
       "title": "Authorization Id",
@@ -136,6 +172,18 @@
     "challenge_instance_id": {
       "title": "Challenge Instance Id",
       "type": "string"
+    },
+    "plan_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Plan Hash"
     },
     "provider_verification_receipt_id": {
       "anyOf": [
@@ -190,6 +238,12 @@
     "object_version": {
       "title": "Object Version",
       "type": "string"
+    },
+    "ledger_index": {
+      "default": 0,
+      "minimum": 0,
+      "title": "Ledger Index",
+      "type": "integer"
     },
     "negative_control_ledger_delta": {
       "default": 0,

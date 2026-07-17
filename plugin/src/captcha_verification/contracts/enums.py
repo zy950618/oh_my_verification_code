@@ -68,6 +68,24 @@ class AuthorizationStatus(str, Enum):
     REJECTED = "rejected"
 
 
+class ChallengeFamily(str, Enum):
+    UNKNOWN = "unknown"
+    SLIDER = "slider"
+    ROTATE = "rotate"
+    CLICK = "click"
+
+
+class CaptureSpace(str, Enum):
+    INTRINSIC_IMAGE_PX = "intrinsic_image_px"
+    SCREENSHOT_DEVICE_PX = "screenshot_device_px"
+
+
+class ReceiptKind(str, Enum):
+    LOCAL_EXECUTION = "local_execution_receipt"
+    PROVIDER = "provider_receipt"
+    BUSINESS = "business_receipt"
+
+
 class SolutionType(str, Enum):
     TEXT = "text"
     POINTS = "points"

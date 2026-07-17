@@ -1,0 +1,334 @@
+{
+  "$defs": {
+    "ActionKind": {
+      "enum": [
+        "pointer_down",
+        "pointer_move",
+        "pointer_up",
+        "tap",
+        "click",
+        "wait",
+        "type_text",
+        "press",
+        "rotate"
+      ],
+      "title": "ActionKind",
+      "type": "string"
+    },
+    "ActualAction": {
+      "additionalProperties": false,
+      "properties": {
+        "kind": {
+          "$ref": "#/$defs/ActionKind"
+        },
+        "time_ms": {
+          "minimum": 0,
+          "title": "Time Ms",
+          "type": "integer"
+        },
+        "x": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "X"
+        },
+        "y": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Y"
+        },
+        "text": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Text"
+        },
+        "duration_ms": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Duration Ms"
+        },
+        "angle_degrees": {
+          "anyOf": [
+            {
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Angle Degrees"
+        },
+        "observed_at": {
+          "format": "date-time",
+          "title": "Observed At",
+          "type": "string"
+        }
+      },
+      "required": [
+        "kind",
+        "time_ms",
+        "observed_at"
+      ],
+      "title": "ActualAction",
+      "type": "object"
+    },
+    "EvidenceRef": {
+      "additionalProperties": false,
+      "properties": {
+        "evidence_id": {
+          "title": "Evidence Id",
+          "type": "string"
+        },
+        "uri": {
+          "title": "Uri",
+          "type": "string"
+        },
+        "sha256": {
+          "anyOf": [
+            {
+              "type": "string"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Sha256"
+        },
+        "fact_level": {
+          "$ref": "#/$defs/FactLevel",
+          "default": "unverified"
+        }
+      },
+      "required": [
+        "evidence_id",
+        "uri"
+      ],
+      "title": "EvidenceRef",
+      "type": "object"
+    },
+    "ExecutionStatus": {
+      "enum": [
+        "not_run",
+        "completed",
+        "rejected",
+        "errored"
+      ],
+      "title": "ExecutionStatus",
+      "type": "string"
+    },
+    "FactClaim": {
+      "additionalProperties": false,
+      "properties": {
+        "claim": {
+          "title": "Claim",
+          "type": "string"
+        },
+        "level": {
+          "$ref": "#/$defs/FactLevel"
+        },
+        "evidence_refs": {
+          "items": {
+            "type": "string"
+          },
+          "title": "Evidence Refs",
+          "type": "array"
+        }
+      },
+      "required": [
+        "claim",
+        "level"
+      ],
+      "title": "FactClaim",
+      "type": "object"
+    },
+    "FactLevel": {
+      "enum": [
+        "observed",
+        "derived",
+        "assumed",
+        "unverified"
+      ],
+      "title": "FactLevel",
+      "type": "string"
+    },
+    "ProviderVerificationStatus": {
+      "enum": [
+        "not_attempted",
+        "accepted",
+        "rejected",
+        "boundary_only"
+      ],
+      "title": "ProviderVerificationStatus",
+      "type": "string"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-execution-receipt/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "kind": {
+      "const": "local_execution_receipt",
+      "default": "local_execution_receipt",
+      "title": "Kind",
+      "type": "string"
+    },
+    "audience": {
+      "const": "local_provider_verifier",
+      "default": "local_provider_verifier",
+      "title": "Audience",
+      "type": "string"
+    },
+    "receipt_id": {
+      "title": "Receipt Id",
+      "type": "string"
+    },
+    "receipt_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Receipt Hash"
+    },
+    "plan_id": {
+      "title": "Plan Id",
+      "type": "string"
+    },
+    "plan_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Plan Hash"
+    },
+    "input_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Hash"
+    },
+    "challenge_instance_id": {
+      "title": "Challenge Instance Id",
+      "type": "string"
+    },
+    "session_binding_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Session Binding Hash"
+    },
+    "driver_id": {
+      "title": "Driver Id",
+      "type": "string"
+    },
+    "status": {
+      "$ref": "#/$defs/ExecutionStatus"
+    },
+    "started_at": {
+      "format": "date-time",
+      "title": "Started At",
+      "type": "string"
+    },
+    "ended_at": {
+      "format": "date-time",
+      "title": "Ended At",
+      "type": "string"
+    },
+    "actual_actions": {
+      "items": {
+        "$ref": "#/$defs/ActualAction"
+      },
+      "title": "Actual Actions",
+      "type": "array"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
+    },
+    "facts": {
+      "items": {
+        "$ref": "#/$defs/FactClaim"
+      },
+      "title": "Facts",
+      "type": "array"
+    },
+    "provider_verification_status": {
+      "$ref": "#/$defs/ProviderVerificationStatus",
+      "default": "not_attempted"
+    },
+    "business_acceptance_status": {
+      "const": "not_attempted",
+      "default": "not_attempted",
+      "title": "Business Acceptance Status",
+      "type": "string"
+    }
+  },
+  "required": [
+    "receipt_id",
+    "plan_id",
+    "challenge_instance_id",
+    "driver_id",
+    "status",
+    "started_at",
+    "ended_at"
+  ],
+  "title": "ExecutionReceipt",
+  "type": "object"
+}

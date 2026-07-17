@@ -1,0 +1,9 @@
+id: captcha-action-validation-reference-planner
+skill: captcha-action-validation
+intent: acceptance
+expected:
+  executable: false
+  transforms: [crop, dpr, rendered_scale, iframe, scroll]
+  challenge_binding_required: true
+  expiry_required: true
+  plan_hash_required: true

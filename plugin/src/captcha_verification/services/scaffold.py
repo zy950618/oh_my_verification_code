@@ -12,7 +12,7 @@ from pydantic import BaseModel, ConfigDict, Field, field_validator
 
 IDENTIFIER = re.compile(r"^[a-z0-9]+(?:-[a-z0-9]+)*$")
 TEMPLATE_VERSION = "target-adapter/v1"
-GENERATOR_VERSION = "1.0.0rc1"
+GENERATOR_VERSION = "1.0.0"
 
 
 class ScaffoldSpec(BaseModel):

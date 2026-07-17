@@ -1,36 +1,30 @@
 from __future__ import annotations
 
-from typing import Annotated
-
-from pydantic import BaseModel, ConfigDict, Field
-
-from captcha_verification.contracts import ActionPlan, ClassificationRequest, ClassificationResult, SolveRequest
-
-
-class PlanActionRequest(BaseModel):
-    model_config = ConfigDict(extra="forbid")
-
-    request_id: str
-    prediction_id: str
-    challenge_instance_id: str
-    authorization_record_id: str
-    width: Annotated[float, Field(gt=0)]
-    height: Annotated[float, Field(gt=0)]
+from captcha_verification.actions import plan_action as plan_action_service
+from captcha_verification.classification import classify as classify_service
+from captcha_verification.contracts import (
+    ActionPlan,
+    ClassificationRequest,
+    ClassificationResult,
+    PlanActionRequest,
+    PredictionOutcome,
+    SolveRequest,
+)
+from captcha_verification.solvers import solve as solve_service
 
 
 def create_app():
     try:
-        from fastapi import FastAPI, HTTPException
+        from fastapi import FastAPI
     except ImportError as exc:
         raise RuntimeError("Install captcha-verification-skills[fastapi]") from exc
 
     app = FastAPI(
-        title="CAPTCHA Verification Skills Contract Transport",
-        version="1.0.0-rc.1",
+        title="CAPTCHA Verification Skills Local Reference Transport",
+        version="1.0.0",
         description=(
-            "Thin provider-neutral contract transport. Readiness covers this transport only; "
-            "classifier, solver, and planner implementations are unavailable in this release candidate. "
-            "It does not execute targets or issue business receipts."
+            "Thin provider-neutral transport for repository-owned raster fixtures. "
+            "It does not execute targets or issue first-party business receipts."
         ),
     )
 
@@ -42,25 +36,25 @@ def create_app():
     def ready() -> dict[str, object]:
         return {
             "status": "ready",
-            "scope": "contract_transport",
+            "scope": "local_fixture_reference_runtime",
             "capabilities": {
-                "classifier": "unavailable",
-                "solver": "unavailable",
-                "planner": "unavailable",
+                "classifier": "local_fixture_only",
+                "solver": "slider_rotate_click_local_fixture_only",
+                "planner": "non_executable_local_plan_only",
             },
         }
 
     @app.post("/classify", response_model=ClassificationResult)
     def classify(request: ClassificationRequest) -> ClassificationResult:
-        raise HTTPException(status_code=501, detail={"code": "classifier_unavailable", "request_id": request.request_id})
+        return classify_service(request)
 
-    @app.post("/solve")
-    def solve(request: SolveRequest) -> dict[str, object]:
-        raise HTTPException(status_code=501, detail={"code": "solver_unavailable", "request_id": request.request_id})
+    @app.post("/solve", response_model=PredictionOutcome)
+    def solve(request: SolveRequest) -> PredictionOutcome:
+        return solve_service(request)
 
     @app.post("/plan-action", response_model=ActionPlan)
     def plan_action(request: PlanActionRequest) -> ActionPlan:
-        raise HTTPException(status_code=501, detail={"code": "planner_unavailable", "request_id": request.request_id})
+        return plan_action_service(request)
 
     return app
 

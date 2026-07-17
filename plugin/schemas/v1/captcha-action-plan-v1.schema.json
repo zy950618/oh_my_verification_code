@@ -95,6 +95,52 @@
       "title": "ActionKind",
       "type": "string"
     },
+    "ArtifactBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "registry_kind": {
+          "enum": [
+            "classifier",
+            "solver",
+            "model",
+            "dataset",
+            "action",
+            "target",
+            "evidence"
+          ],
+          "title": "Registry Kind",
+          "type": "string"
+        },
+        "entry_id": {
+          "title": "Entry Id",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "artifact_hash": {
+          "title": "Artifact Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "registry_kind",
+        "entry_id",
+        "version",
+        "artifact_hash"
+      ],
+      "title": "ArtifactBinding",
+      "type": "object"
+    },
+    "CaptureSpace": {
+      "enum": [
+        "intrinsic_image_px",
+        "screenshot_device_px"
+      ],
+      "title": "CaptureSpace",
+      "type": "string"
+    },
     "CoordinateFrame": {
       "additionalProperties": false,
       "properties": {
@@ -113,6 +159,36 @@
           "title": "Device Pixel Ratio",
           "type": "number"
         },
+        "capture_space": {
+          "$ref": "#/$defs/CaptureSpace",
+          "default": "intrinsic_image_px"
+        },
+        "intrinsic_width": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intrinsic Width"
+        },
+        "intrinsic_height": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intrinsic Height"
+        },
         "crop_x": {
           "default": 0,
           "title": "Crop X",
@@ -122,6 +198,42 @@
           "default": 0,
           "title": "Crop Y",
           "type": "number"
+        },
+        "rendered_x": {
+          "default": 0,
+          "title": "Rendered X",
+          "type": "number"
+        },
+        "rendered_y": {
+          "default": 0,
+          "title": "Rendered Y",
+          "type": "number"
+        },
+        "rendered_width": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rendered Width"
+        },
+        "rendered_height": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rendered Height"
         },
         "scroll_x": {
           "default": 0,
@@ -143,8 +255,20 @@
           "title": "Iframe Y",
           "type": "number"
         },
+        "frame_chain": {
+          "items": {
+            "$ref": "#/$defs/FrameTransform"
+          },
+          "title": "Frame Chain",
+          "type": "array"
+        },
         "rounding": {
           "default": "nearest",
+          "enum": [
+            "nearest",
+            "floor",
+            "ceil"
+          ],
           "title": "Rounding",
           "type": "string"
         }
@@ -155,6 +279,98 @@
         "device_pixel_ratio"
       ],
       "title": "CoordinateFrame",
+      "type": "object"
+    },
+    "FrameTransform": {
+      "additionalProperties": false,
+      "properties": {
+        "frame_id": {
+          "title": "Frame Id",
+          "type": "string"
+        },
+        "offset_x": {
+          "default": 0,
+          "title": "Offset X",
+          "type": "number"
+        },
+        "offset_y": {
+          "default": 0,
+          "title": "Offset Y",
+          "type": "number"
+        },
+        "scroll_x": {
+          "default": 0,
+          "title": "Scroll X",
+          "type": "number"
+        },
+        "scroll_y": {
+          "default": 0,
+          "title": "Scroll Y",
+          "type": "number"
+        },
+        "border_x": {
+          "default": 0,
+          "title": "Border X",
+          "type": "number"
+        },
+        "border_y": {
+          "default": 0,
+          "title": "Border Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "frame_id"
+      ],
+      "title": "FrameTransform",
+      "type": "object"
+    },
+    "TransformRecord": {
+      "additionalProperties": false,
+      "properties": {
+        "step": {
+          "title": "Step",
+          "type": "string"
+        },
+        "input_x": {
+          "title": "Input X",
+          "type": "number"
+        },
+        "input_y": {
+          "title": "Input Y",
+          "type": "number"
+        },
+        "output_x": {
+          "title": "Output X",
+          "type": "number"
+        },
+        "output_y": {
+          "title": "Output Y",
+          "type": "number"
+        },
+        "details": {
+          "additionalProperties": {
+            "anyOf": [
+              {
+                "type": "number"
+              },
+              {
+                "type": "string"
+              }
+            ]
+          },
+          "title": "Details",
+          "type": "object"
+        }
+      },
+      "required": [
+        "step",
+        "input_x",
+        "input_y",
+        "output_x",
+        "output_y"
+      ],
+      "title": "TransformRecord",
       "type": "object"
     }
   },
@@ -177,8 +393,74 @@
       "title": "Source Prediction Id",
       "type": "string"
     },
+    "source_prediction_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Source Prediction Hash"
+    },
+    "input_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Input Hash"
+    },
+    "session_binding_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Session Binding Hash"
+    },
+    "target_id": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Target Id"
+    },
+    "planner_binding": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ArtifactBinding"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
     "coordinate_frame": {
       "$ref": "#/$defs/CoordinateFrame"
+    },
+    "transforms": {
+      "items": {
+        "$ref": "#/$defs/TransformRecord"
+      },
+      "title": "Transforms",
+      "type": "array"
     },
     "actions": {
       "items": {
@@ -201,6 +483,12 @@
       "title": "Stop Conditions",
       "type": "array"
     },
+    "maximum_action_count": {
+      "default": 16,
+      "exclusiveMinimum": 0,
+      "title": "Maximum Action Count",
+      "type": "integer"
+    },
     "created_at": {
       "format": "date-time",
       "title": "Created At",
@@ -214,6 +502,18 @@
     "authorization_record_id": {
       "title": "Authorization Record Id",
       "type": "string"
+    },
+    "plan_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Plan Hash"
     },
     "executable": {
       "const": false,

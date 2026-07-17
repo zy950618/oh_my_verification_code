@@ -7,7 +7,7 @@ compatibility: Requires Python 3.11+ and the captcha-verification-skills package
 argument-hint: "[dataset, model package, or run ID]"
 metadata:
   owner: zhaoyang
-  version: "1.0.0-rc.1"
+  version: "1.0.0"
   lifecycle: library
 ---
 
@@ -17,7 +17,7 @@ Audit reproducible data and model lifecycle contracts without confusing model me
 
 ## Release candidate boundary
 
-Audits lifecycle contracts and evidence; no training or model-lifecycle runtime is bundled. The `1.0.0-rc.1` availability state is `blocked_without_external_implementation`.
+Audits lifecycle contracts and evidence; no training or model-lifecycle runtime is bundled. The `1.0.0` availability state is `local_reference_runtime_available`.
 
 ## Workflow
 

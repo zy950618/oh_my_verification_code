@@ -10,91 +10,39 @@ from captcha_verification.adapters.fastapi import app
 
 @pytest.fixture
 async def client() -> AsyncIterator[httpx.AsyncClient]:
-    async with httpx.AsyncClient(
-        transport=httpx.ASGITransport(app=app),
-        base_url="http://testserver",
-    ) as value:
+    async with httpx.AsyncClient(transport=httpx.ASGITransport(app=app), base_url="http://testserver") as value:
         yield value
 
 
 @pytest.mark.anyio
-async def test_fastapi_health_is_transport_scoped(client: httpx.AsyncClient) -> None:
+async def test_fastapi_health_is_local_runtime_scoped(client: httpx.AsyncClient) -> None:
     assert (await client.get("/health/live")).json() == {"status": "live", "scope": "transport"}
     assert (await client.get("/health/ready")).json() == {
         "status": "ready",
-        "scope": "contract_transport",
+        "scope": "local_fixture_reference_runtime",
         "capabilities": {
-            "classifier": "unavailable",
-            "solver": "unavailable",
-            "planner": "unavailable",
+            "classifier": "local_fixture_only",
+            "solver": "slider_rotate_click_local_fixture_only",
+            "planner": "non_executable_local_plan_only",
         },
     }
-
     schema = app.openapi()
-    assert "Readiness covers this transport only" in schema["info"]["description"]
-    paths = schema["paths"]
-    assert {"/classify", "/solve", "/plan-action"} <= set(paths)
-    assert all("execute" not in path and "run-target" not in path for path in paths)
+    assert "repository-owned raster fixtures" in schema["info"]["description"]
+    assert {"/classify", "/solve", "/plan-action"} <= set(schema["paths"])
+    assert all("execute" not in path and "receipt" not in path for path in schema["paths"])
 
 
 @pytest.mark.anyio
-@pytest.mark.parametrize(
-    ("path", "payload", "code"),
-    [
-        (
-            "/classify",
-            {
-                "request_id": "request-classify",
-                "assets": [
-                    {
-                        "asset_id": "asset-1",
-                        "uri": "file:///fixture.png",
-                        "media_type": "image/png",
-                        "sha256": "abc",
-                    }
-                ],
-            },
-            "classifier_unavailable",
-        ),
-        (
-            "/solve",
-            {
-                "request_id": "request-solve",
-                "challenge_instance_id": "challenge-1",
-                "challenge_family": "slider",
-                "allowed_solution_types": ["offset"],
-                "assets": [
-                    {
-                        "asset_id": "asset-1",
-                        "uri": "file:///fixture.png",
-                        "media_type": "image/png",
-                        "sha256": "abc",
-                    }
-                ],
-            },
-            "solver_unavailable",
-        ),
-        (
-            "/plan-action",
-            {
-                "request_id": "request-plan",
-                "prediction_id": "prediction-1",
-                "challenge_instance_id": "challenge-1",
-                "authorization_record_id": "authorization-1",
-                "width": 100,
-                "height": 50,
-            },
-            "planner_unavailable",
-        ),
-    ],
-)
-async def test_fastapi_operations_fail_closed(
-    client: httpx.AsyncClient,
-    path: str,
-    payload: dict[str, object],
-    code: str,
-) -> None:
-    response = await client.post(path, json=payload)
-    assert response.status_code == 501
-    detail = response.json()["detail"]
-    assert detail == {"code": code, "request_id": payload["request_id"]}
+async def test_fastapi_classify_fails_closed_without_authorization(client: httpx.AsyncClient) -> None:
+    response = await client.post(
+        "/classify",
+        json={
+            "request_id": "request-classify",
+            "assets": [{"asset_id": "asset-1", "uri": "file:///fixture.png", "media_type": "image/png", "sha256": "abc"}],
+        },
+    )
+    assert response.status_code == 200
+    payload = response.json()
+    assert payload["status"] == "unsupported"
+    assert payload["challenge_family"] == "unknown"
+    assert payload["authorization_decision"] == "missing_verified_authorization"

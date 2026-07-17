@@ -1,13 +1,13 @@
 ---
 name: captcha-solver-core
-description: Define and validate provider-neutral prediction contracts and solver registry decisions for local or authorized CAPTCHA assets. This release candidate bundles no classifier or solver implementation and does not perform browser execution or business acceptance.
+description: Define and validate provider-neutral prediction contracts and solver registry decisions for local or authorized CAPTCHA assets. Includes a raster-only local fixture classifier and slider/rotate/click reference solvers; it does not perform browser execution or claim third-party business acceptance.
 when_to_use: Use when a normalized prediction contract, solver registry decision, leakage gate, or missing-implementation report is needed.
 license: MIT
 compatibility: Requires Python 3.11+ and the captcha-verification-skills package. The optional vision extra is a dependency hook and does not add a bundled solver.
 argument-hint: "[challenge asset path]"
 metadata:
   owner: zhaoyang
-  version: "1.0.0-rc.1"
+  version: "1.0.0"
   lifecycle: library
 ---
 
@@ -17,7 +17,7 @@ Define and validate normalized prediction contracts for approved input assets. A
 
 ## Release candidate boundary
 
-Defines and validates prediction contracts and registry decisions; no classifier or solver implementation is bundled. The `1.0.0-rc.1` availability state is `blocked_without_external_implementation`.
+Defines and validates prediction contracts and registry decisions, and documents the bundled raster-only local fixture classifier plus slider/rotate/click reference solvers. The `1.0.0` availability state is `local_reference_runtime_available`; external targets remain unsupported.
 
 ## Workflow
 

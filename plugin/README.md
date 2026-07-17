@@ -2,11 +2,11 @@
 
 This directory is both the Claude Code plugin source and the Python distribution source for the provider-neutral CAPTCHA Verification Skills release candidate.
 
-## 1.0.0 release-candidate boundary
+## 1.0.0 local reference boundary
 
-`1.0.0-rc.1` provides governance/workflow Skills, Pydantic contracts, validation, registry mechanics, schema export, promotion evaluation, and generate-only target-adapter scaffolding. It does not bundle classifier, solver, action-planner, browser-driver, provider-diagnostics, or model-training implementations.
+`1.0.0` provides governance/workflow Skills, Pydantic contracts, validation, versioned registries, schema export, promotion evaluation, generate-only target-adapter scaffolding, and a deterministic local Reference Runtime for repository-owned synthetic raster fixtures. The runtime classifies and solves reference slider/rotate/click fixtures and creates typed non-executable action plans. A self-owned localhost harness closes the receipt chain through first-party business-data assertions and fresh repeat acceptance. It does not fetch or execute external targets, provide stealth, or claim third-party CAPTCHA capability.
 
-Implemented CLI commands are `validate`, `registry`, `evaluate`, `export-schemas`, and `scaffold-target-adapter`. The reserved `classify`, `solve`, and `plan-action` commands fail closed with `operation_status: blocked` and exit code `4`; the corresponding FastAPI operations return HTTP 501.
+Implemented CLI commands include `classify`, `solve`, `plan-action`, and `e2e-local` in addition to `validate`, `registry`, `evaluate`, `export-schemas`, and `scaffold-target-adapter`. The three runtime commands require file-backed local fixture requests and fail closed for unsupported, unverified, low-confidence, or external inputs.
 
 ## Two installation surfaces
 
@@ -29,7 +29,7 @@ python -m pip install -e '.[vision]'
 python -m pip install -e '.[train]'
 ```
 
-FastAPI and MCP enable thin contract transports. Browser, vision, and train provide dependency hooks for downstream or private implementations; installing them does not make the blocked operations available.
+FastAPI and MCP enable thin contract transports over the same local fixture classifier, solvers, and non-executable planner. Browser and train remain dependency hooks for downstream or private implementations; installing them does not add target execution. The localhost receipt-chain harness is intentionally CLI/Python-only so transports cannot issue first-party business receipts.
 
 ### Claude Code plugin
 

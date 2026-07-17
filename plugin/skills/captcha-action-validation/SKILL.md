@@ -1,13 +1,13 @@
 ---
 name: captcha-action-validation
-description: Validate supplied versioned, non-executable CAPTCHA action-plan contracts, coordinate frames, typed actions, expiry, stop conditions, and supplied driver receipts. This release candidate bundles no planner, driver, or replay implementation.
+description: Validate supplied versioned, non-executable CAPTCHA action-plan contracts, coordinate frames, typed actions, expiry, stop conditions, and supplied driver receipts. Includes a non-executable local fixture planner; it bundles no browser driver or target executor.
 when_to_use: Use when an externally produced action plan or execution receipt must be checked for scope, coordinate, timing, expiry, and evidence boundaries.
 license: MIT
 compatibility: Requires Python 3.11+ and the captcha-verification-skills package. Authorized drivers are external; the browser extra does not add one.
 argument-hint: "[prediction result and coordinate frame]"
 metadata:
   owner: zhaoyang
-  version: "1.0.0-rc.1"
+  version: "1.0.0"
   lifecycle: governed
 ---
 
@@ -17,7 +17,7 @@ Validate a supplied scoped action plan. Validation is side-effect free; this RC 
 
 ## Release candidate boundary
 
-Validates supplied action-plan contracts; no planner, driver, or replay implementation is bundled. The `1.0.0-rc.1` availability state is `blocked_without_external_implementation`.
+Validates supplied action-plan contracts and documents the bundled non-executable local fixture planner. The `1.0.0` availability state is `local_reference_runtime_available`; no browser driver or target executor is bundled.
 
 ## Workflow
 

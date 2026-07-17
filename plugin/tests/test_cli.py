@@ -41,18 +41,12 @@ def test_cli_scaffold_defaults_to_dry_run(tmp_path: Path, capsys) -> None:
 
 
 @pytest.mark.parametrize("command", ["classify", "solve", "plan-action"])
-def test_cli_reserved_operations_fail_closed(command: str, capsys) -> None:
+def test_runtime_operations_require_a_local_request_file(command: str, capsys) -> None:
     code = main([command])
     payload = json.loads(capsys.readouterr().out)
 
     assert code == 4
     assert payload["operation_status"] == "blocked"
     assert payload["result"] == {"command": command}
-    assert payload["missing_evidence"] == [
-        "command implementation is not available in this release candidate"
-    ]
+    assert payload["missing_evidence"] == ["local fixture request file is required"]
     assert payload["errors"] == []
-    assert set(payload["result"]) == {"command"}
-    assert "prediction" not in payload
-    assert "solution" not in payload
-    assert "receipt" not in payload

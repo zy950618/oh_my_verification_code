@@ -7,7 +7,7 @@ compatibility: Requires Python 3.11+ and the captcha-verification-skills package
 argument-hint: "[asset path or scoped observation description]"
 metadata:
   owner: zhaoyang
-  version: "1.0.0-rc.1"
+  version: "1.0.0"
   lifecycle: library
 ---
 
@@ -17,7 +17,7 @@ Diagnose provider and flow evidence without executing a challenge.
 
 ## Release candidate boundary
 
-Analyzes supplied authorized evidence; it does not browse, probe, or run a classifier. The `1.0.0-rc.1` availability state is `blocked_without_external_implementation`.
+Analyzes supplied authorized evidence; it does not browse, probe, or run a classifier. The `1.0.0` availability state is `local_reference_runtime_available`.
 
 ## Workflow
 

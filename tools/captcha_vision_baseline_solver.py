@@ -297,7 +297,7 @@ def main() -> int:
     }
     output_path = Path(args.output) if args.output else manifest_path.parent / "baseline-predictions.json"
     output_path.write_text(json.dumps(payload, ensure_ascii=False, indent=2), encoding="utf-8")
-    print(json.dumps({"status": "PASS", "run_id": payload["run_id"], "prediction_path": str(output_path), "prediction_count": len(predictions)}, ensure_ascii=False, indent=2))
+    print(json.dumps({"operation_status": "succeeded", "prediction_status": "produced" if predictions else "not_run", "capability_scope": "legacy_local_evaluation_only", "run_id": payload["run_id"], "prediction_path": str(output_path), "prediction_count": len(predictions)}, ensure_ascii=False, indent=2))
     return 0
 
 

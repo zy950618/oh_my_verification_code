@@ -14,5 +14,5 @@ expected:
   route: captcha-provider-diagnostics
   fact_labels_required: true
   business_success_requires_first_party_receipt: true
-  release_candidate_availability: blocked_without_external_implementation
+  release_candidate_availability: local_reference_runtime_available
   generated_artifacts: not_applicable

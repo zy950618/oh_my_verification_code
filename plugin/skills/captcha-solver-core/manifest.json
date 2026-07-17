@@ -2,7 +2,7 @@
   "schema_version": "skill-manifest/v1",
   "name": "captcha-solver-core",
   "owner": "zhaoyang",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "lifecycle": "library",
   "review_cadence": "quarterly",
   "input_files": "file-backed fixture",
@@ -34,8 +34,8 @@
     ]
   },
   "release_candidate_boundary": {
-    "availability": "blocked_without_external_implementation",
+    "availability": "local_reference_runtime_available",
     "generated_artifacts": "not_applicable",
-    "summary": "Defines and validates prediction contracts and registry decisions; no classifier or solver implementation is bundled."
+    "summary": "Documents and validates the bundled raster-only local fixture classifier and slider/rotate/click reference solvers; external targets remain unsupported."
   }
 }

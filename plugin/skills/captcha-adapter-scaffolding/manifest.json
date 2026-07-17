@@ -2,7 +2,7 @@
   "schema_version": "skill-manifest/v1",
   "name": "captcha-adapter-scaffolding",
   "owner": "zhaoyang",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "lifecycle": "governed",
   "review_cadence": "quarterly",
   "input_files": "file-backed fixture",

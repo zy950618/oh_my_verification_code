@@ -21,8 +21,8 @@ jobs:
         with:
           python-version: ${{ matrix.python-version }}
           cache: pip
-      - name: Install core, transports, and test dependencies
-        run: python -m pip install './plugin[dev,fastapi,mcp]'
+      - name: Install core, transports, vision, and test dependencies
+        run: python -m pip install './plugin[dev,fastapi,mcp,vision]'
       - name: Compile Python sources
         run: python -m compileall -q plugin/src tools tests
       - name: Run contract, boundary, and governance tests
@@ -49,15 +49,11 @@ jobs:
       - name: Smoke install built wheel
         run: |
           python -m venv /tmp/captcha-wheel-smoke
-          /tmp/captcha-wheel-smoke/bin/python -m pip install plugin/dist/*.whl
+          /tmp/captcha-wheel-smoke/bin/python -m pip install plugin/dist/*.whl pillow
           /tmp/captcha-wheel-smoke/bin/python -c 'import captcha_verification'
           /tmp/captcha-wheel-smoke/bin/captcha-skills --help
-          set +e
-          /tmp/captcha-wheel-smoke/bin/captcha-skills solve >/tmp/captcha-solve.json
-          code=$?
-          set -e
-          test "$code" -eq 4
-          /tmp/captcha-wheel-smoke/bin/python -c 'import json; p=json.load(open("/tmp/captcha-solve.json")); assert p["operation_status"] == "blocked"'
+          /tmp/captcha-wheel-smoke/bin/captcha-skills registry validate >/tmp/captcha-registry.json
+          /tmp/captcha-wheel-smoke/bin/python -c 'import json; p=json.load(open("/tmp/captcha-registry.json")); assert p["operation_status"] == "succeeded"'
 
   skill-and-plugin:
     runs-on: ubuntu-latest

@@ -137,7 +137,7 @@ def main(argv: list[str]) -> int:
     except Exception as exc:
         print(f"FAIL {args.manifest}: {exc}", file=sys.stderr)
         return 1
-    print(f"PASS {args.manifest}")
+    print(json.dumps({"operation_status": "succeeded", "validation_status": "valid", "manifest": str(args.manifest)}, ensure_ascii=False))
     return 0
 
 

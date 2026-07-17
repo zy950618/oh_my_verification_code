@@ -2,8 +2,8 @@
   "$schema": "https://json.schemastore.org/claude-code-plugin-manifest.json",
   "name": "captcha-verification-skills",
   "displayName": "CAPTCHA Verification Skills",
-  "version": "1.0.0-rc.1",
-  "description": "Provider-neutral governance and contract skills for authorized CAPTCHA evidence review, lifecycle auditing, action-plan validation, and generate-only adapter scaffolding.",
+  "version": "1.0.0",
+  "description": "Provider-neutral Skills and deterministic local fixture Reference Runtime for authorized CAPTCHA evidence, prediction, non-executable planning, receipt-chain validation, and generate-only adapter scaffolding.",
   "author": {
     "name": "zhaoyang"
   },

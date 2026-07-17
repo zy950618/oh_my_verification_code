@@ -1,0 +1,9 @@
+id: captcha-solver-core-reference-runtime
+skill: captcha-solver-core
+intent: acceptance
+expected:
+  families: [slider, rotate, click]
+  raster_only: true
+  version_and_hash_required: true
+  states: [produced, low_confidence, unsupported, failed]
+  svg_metadata_route: negative_eval_only

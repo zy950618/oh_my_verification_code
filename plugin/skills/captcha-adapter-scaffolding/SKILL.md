@@ -8,7 +8,7 @@ argument-hint: "[target-id] [challenge-family] [cli|fastapi|mcp]"
 disable-model-invocation: true
 metadata:
   owner: zhaoyang
-  version: "1.0.0-rc.1"
+  version: "1.0.0"
   lifecycle: governed
 ---
 
@@ -18,7 +18,7 @@ Generate an adapter engineering package without interacting with the target.
 
 ## Release candidate boundary
 
-Deterministically generates or previews private adapter files; generated files are never executed. The `1.0.0-rc.1` availability state is `available_generate_only`.
+Deterministically generates or previews private adapter files; generated files are never executed. The `1.0.0` availability state is `available_generate_only`.
 
 ## Workflow
 

@@ -1,5 +1,43 @@
 {
   "$defs": {
+    "ArtifactBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "registry_kind": {
+          "enum": [
+            "classifier",
+            "solver",
+            "model",
+            "dataset",
+            "action",
+            "target",
+            "evidence"
+          ],
+          "title": "Registry Kind",
+          "type": "string"
+        },
+        "entry_id": {
+          "title": "Entry Id",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "artifact_hash": {
+          "title": "Artifact Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "registry_kind",
+        "entry_id",
+        "version",
+        "artifact_hash"
+      ],
+      "title": "ArtifactBinding",
+      "type": "object"
+    },
     "EvidenceRef": {
       "additionalProperties": false,
       "properties": {
@@ -336,6 +374,18 @@
       "default": null,
       "title": "Calibration Version"
     },
+    "calibration_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Calibration Hash"
+    },
     "solver_id": {
       "anyOf": [
         {
@@ -408,6 +458,37 @@
       "default": null,
       "title": "Input Hash"
     },
+    "classification_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Classification Hash"
+    },
+    "artifact_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Artifact Hash"
+    },
+    "bindings": {
+      "items": {
+        "$ref": "#/$defs/ArtifactBinding"
+      },
+      "title": "Bindings",
+      "type": "array"
+    },
     "latency_ms": {
       "anyOf": [
         {
@@ -433,6 +514,13 @@
         "$ref": "#/$defs/FactClaim"
       },
       "title": "Facts",
+      "type": "array"
+    },
+    "warnings": {
+      "items": {
+        "type": "string"
+      },
+      "title": "Warnings",
       "type": "array"
     },
     "business_acceptance_status": {

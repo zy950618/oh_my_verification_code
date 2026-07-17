@@ -18,6 +18,32 @@
         "sha256": {
           "title": "Sha256",
           "type": "string"
+        },
+        "width_px": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width Px"
+        },
+        "height_px": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height Px"
         }
       },
       "required": [
@@ -28,6 +54,16 @@
       ],
       "title": "AssetRef",
       "type": "object"
+    },
+    "ChallengeFamily": {
+      "enum": [
+        "unknown",
+        "slider",
+        "rotate",
+        "click"
+      ],
+      "title": "ChallengeFamily",
+      "type": "string"
     },
     "SolutionType": {
       "enum": [
@@ -59,8 +95,7 @@
       "type": "string"
     },
     "challenge_family": {
-      "title": "Challenge Family",
-      "type": "string"
+      "$ref": "#/$defs/ChallengeFamily"
     },
     "assets": {
       "items": {
@@ -88,6 +123,32 @@
       "default": null,
       "title": "Classification Id"
     },
+    "classification_hash": {
+      "anyOf": [
+        {
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Classification Hash"
+    },
+    "classification_confidence": {
+      "anyOf": [
+        {
+          "maximum": 1,
+          "minimum": 0,
+          "type": "number"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Classification Confidence"
+    },
     "solver_id": {
       "anyOf": [
         {
@@ -111,6 +172,19 @@
       ],
       "default": null,
       "title": "Authorization Record Id"
+    },
+    "expires_at": {
+      "anyOf": [
+        {
+          "format": "date-time",
+          "type": "string"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null,
+      "title": "Expires At"
     }
   },
   "required": [

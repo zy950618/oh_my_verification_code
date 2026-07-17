@@ -2,7 +2,7 @@
   "schema_version": "skill-manifest/v1",
   "name": "captcha-authorized-flow",
   "owner": "zhaoyang",
-  "version": "1.0.0-rc.1",
+  "version": "1.0.0",
   "lifecycle": "governed",
   "review_cadence": "quarterly",
   "input_files": "file-backed fixture",
@@ -34,8 +34,8 @@
     ]
   },
   "release_candidate_boundary": {
-    "availability": "blocked_without_external_implementation",
+    "availability": "local_reference_runtime_available",
     "generated_artifacts": "not_applicable",
-    "summary": "Validates supplied authorization and receipt contracts; it does not collect receipts or execute targets."
+    "summary": "Documents and validates the self-owned localhost receipt-chain harness; it does not collect production receipts or execute external targets."
   }
 }

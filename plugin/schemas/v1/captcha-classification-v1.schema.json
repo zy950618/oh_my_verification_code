@@ -1,5 +1,53 @@
 {
   "$defs": {
+    "ArtifactBinding": {
+      "additionalProperties": false,
+      "properties": {
+        "registry_kind": {
+          "enum": [
+            "classifier",
+            "solver",
+            "model",
+            "dataset",
+            "action",
+            "target",
+            "evidence"
+          ],
+          "title": "Registry Kind",
+          "type": "string"
+        },
+        "entry_id": {
+          "title": "Entry Id",
+          "type": "string"
+        },
+        "version": {
+          "title": "Version",
+          "type": "string"
+        },
+        "artifact_hash": {
+          "title": "Artifact Hash",
+          "type": "string"
+        }
+      },
+      "required": [
+        "registry_kind",
+        "entry_id",
+        "version",
+        "artifact_hash"
+      ],
+      "title": "ArtifactBinding",
+      "type": "object"
+    },
+    "ChallengeFamily": {
+      "enum": [
+        "unknown",
+        "slider",
+        "rotate",
+        "click"
+      ],
+      "title": "ChallengeFamily",
+      "type": "string"
+    },
     "EvidenceRef": {
       "additionalProperties": false,
       "properties": {
@@ -70,6 +118,17 @@
       "title": "FactLevel",
       "type": "string"
     },
+    "PredictionStatus": {
+      "enum": [
+        "not_run",
+        "produced",
+        "low_confidence",
+        "unsupported",
+        "failed"
+      ],
+      "title": "PredictionStatus",
+      "type": "string"
+    },
     "ProviderCandidate": {
       "additionalProperties": false,
       "properties": {
@@ -125,8 +184,7 @@
       "type": "array"
     },
     "challenge_family": {
-      "title": "Challenge Family",
-      "type": "string"
+      "$ref": "#/$defs/ChallengeFamily"
     },
     "confidence": {
       "maximum": 1,
@@ -145,6 +203,36 @@
     "classifier_version": {
       "title": "Classifier Version",
       "type": "string"
+    },
+    "classifier_hash": {
+      "title": "Classifier Hash",
+      "type": "string"
+    },
+    "input_hash": {
+      "title": "Input Hash",
+      "type": "string"
+    },
+    "classifier_binding": {
+      "anyOf": [
+        {
+          "$ref": "#/$defs/ArtifactBinding"
+        },
+        {
+          "type": "null"
+        }
+      ],
+      "default": null
+    },
+    "status": {
+      "$ref": "#/$defs/PredictionStatus",
+      "default": "produced"
+    },
+    "evidence": {
+      "items": {
+        "$ref": "#/$defs/EvidenceRef"
+      },
+      "title": "Evidence",
+      "type": "array"
     },
     "facts": {
       "items": {
@@ -168,7 +256,9 @@
     "confidence",
     "required_solver_capability",
     "authorization_decision",
-    "classifier_version"
+    "classifier_version",
+    "classifier_hash",
+    "input_hash"
   ],
   "title": "ClassificationResult",
   "type": "object"

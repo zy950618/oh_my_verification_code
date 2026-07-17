@@ -1,0 +1,262 @@
+{
+  "$defs": {
+    "CaptureSpace": {
+      "enum": [
+        "intrinsic_image_px",
+        "screenshot_device_px"
+      ],
+      "title": "CaptureSpace",
+      "type": "string"
+    },
+    "CoordinateFrame": {
+      "additionalProperties": false,
+      "properties": {
+        "width": {
+          "exclusiveMinimum": 0,
+          "title": "Width",
+          "type": "number"
+        },
+        "height": {
+          "exclusiveMinimum": 0,
+          "title": "Height",
+          "type": "number"
+        },
+        "device_pixel_ratio": {
+          "exclusiveMinimum": 0,
+          "title": "Device Pixel Ratio",
+          "type": "number"
+        },
+        "capture_space": {
+          "$ref": "#/$defs/CaptureSpace",
+          "default": "intrinsic_image_px"
+        },
+        "intrinsic_width": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intrinsic Width"
+        },
+        "intrinsic_height": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Intrinsic Height"
+        },
+        "crop_x": {
+          "default": 0,
+          "title": "Crop X",
+          "type": "number"
+        },
+        "crop_y": {
+          "default": 0,
+          "title": "Crop Y",
+          "type": "number"
+        },
+        "rendered_x": {
+          "default": 0,
+          "title": "Rendered X",
+          "type": "number"
+        },
+        "rendered_y": {
+          "default": 0,
+          "title": "Rendered Y",
+          "type": "number"
+        },
+        "rendered_width": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rendered Width"
+        },
+        "rendered_height": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "number"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Rendered Height"
+        },
+        "scroll_x": {
+          "default": 0,
+          "title": "Scroll X",
+          "type": "number"
+        },
+        "scroll_y": {
+          "default": 0,
+          "title": "Scroll Y",
+          "type": "number"
+        },
+        "iframe_x": {
+          "default": 0,
+          "title": "Iframe X",
+          "type": "number"
+        },
+        "iframe_y": {
+          "default": 0,
+          "title": "Iframe Y",
+          "type": "number"
+        },
+        "frame_chain": {
+          "items": {
+            "$ref": "#/$defs/FrameTransform"
+          },
+          "title": "Frame Chain",
+          "type": "array"
+        },
+        "rounding": {
+          "default": "nearest",
+          "enum": [
+            "nearest",
+            "floor",
+            "ceil"
+          ],
+          "title": "Rounding",
+          "type": "string"
+        }
+      },
+      "required": [
+        "width",
+        "height",
+        "device_pixel_ratio"
+      ],
+      "title": "CoordinateFrame",
+      "type": "object"
+    },
+    "FrameTransform": {
+      "additionalProperties": false,
+      "properties": {
+        "frame_id": {
+          "title": "Frame Id",
+          "type": "string"
+        },
+        "offset_x": {
+          "default": 0,
+          "title": "Offset X",
+          "type": "number"
+        },
+        "offset_y": {
+          "default": 0,
+          "title": "Offset Y",
+          "type": "number"
+        },
+        "scroll_x": {
+          "default": 0,
+          "title": "Scroll X",
+          "type": "number"
+        },
+        "scroll_y": {
+          "default": 0,
+          "title": "Scroll Y",
+          "type": "number"
+        },
+        "border_x": {
+          "default": 0,
+          "title": "Border X",
+          "type": "number"
+        },
+        "border_y": {
+          "default": 0,
+          "title": "Border Y",
+          "type": "number"
+        }
+      },
+      "required": [
+        "frame_id"
+      ],
+      "title": "FrameTransform",
+      "type": "object"
+    }
+  },
+  "additionalProperties": false,
+  "properties": {
+    "schema_version": {
+      "default": "captcha-plan-action-request/v1",
+      "title": "Schema Version",
+      "type": "string"
+    },
+    "request_id": {
+      "title": "Request Id",
+      "type": "string"
+    },
+    "prediction": {
+      "additionalProperties": true,
+      "title": "Prediction",
+      "type": "object"
+    },
+    "challenge_instance_id": {
+      "title": "Challenge Instance Id",
+      "type": "string"
+    },
+    "authorization_record_id": {
+      "title": "Authorization Record Id",
+      "type": "string"
+    },
+    "session_binding_hash": {
+      "title": "Session Binding Hash",
+      "type": "string"
+    },
+    "target_id": {
+      "title": "Target Id",
+      "type": "string"
+    },
+    "coordinate_frame": {
+      "$ref": "#/$defs/CoordinateFrame"
+    },
+    "created_at": {
+      "format": "date-time",
+      "title": "Created At",
+      "type": "string"
+    },
+    "expires_at": {
+      "format": "date-time",
+      "title": "Expires At",
+      "type": "string"
+    },
+    "minimum_confidence": {
+      "default": 0.65,
+      "maximum": 1,
+      "minimum": 0,
+      "title": "Minimum Confidence",
+      "type": "number"
+    }
+  },
+  "required": [
+    "request_id",
+    "prediction",
+    "challenge_instance_id",
+    "authorization_record_id",
+    "session_binding_hash",
+    "target_id",
+    "coordinate_frame",
+    "created_at",
+    "expires_at"
+  ],
+  "title": "PlanActionRequest",
+  "type": "object"
+}

@@ -1,6 +1,6 @@
 ---
 name: captcha-authorized-flow
-description: Validate supplied authorization and receipt contracts for a CAPTCHA or verification-service workflow. Use for authorization review, provider-to-business flow mapping, missing-evidence analysis, or a promotion decision. This release candidate does not collect receipts or execute targets.
+description: Validate supplied authorization and receipt contracts for a CAPTCHA or verification-service workflow. Use for authorization review, provider-to-business flow mapping, missing-evidence analysis, or a promotion decision. Includes a self-owned localhost receipt-chain acceptance harness; it does not execute external targets.
 when_to_use: Use for supplied authorization records, protected business API receipts, repeat verification evidence, promotion decisions, and cross-stage governance. Runtime handoffs require external implementations.
 license: MIT
 compatibility: Requires Python 3.11+ and the captcha-verification-skills package. Target execution is not bundled with this skill.
@@ -8,7 +8,7 @@ argument-hint: "[scope record or authorized workflow description]"
 disable-model-invocation: true
 metadata:
   owner: zhaoyang
-  version: "1.0.0-rc.1"
+  version: "1.0.0"
   lifecycle: governed
 ---
 
@@ -18,7 +18,7 @@ Use this skill as the explicit, governed entry point for an authorized verificat
 
 ## Release candidate boundary
 
-Validates supplied authorization and receipt contracts; it does not collect receipts or execute targets. The `1.0.0-rc.1` availability state is `blocked_without_external_implementation`.
+Validates supplied authorization and receipt contracts and documents the self-owned localhost receipt-chain acceptance harness. The `1.0.0` availability state is `local_reference_runtime_available`; it does not collect production receipts or execute external targets.
 
 ## Workflow
 

@@ -11,5 +11,5 @@ authorization_boundary: provider-neutral; local, self-owned, official sandbox, o
 acceptance_evidence: first-party business receipt, business-data assertions, repeat gate, and negative-control ledger invariants
   when business success is claimed
 release_candidate_boundary:
-  availability: blocked_without_external_implementation
+  availability: local_reference_runtime_available
   generated_artifacts: not_applicable

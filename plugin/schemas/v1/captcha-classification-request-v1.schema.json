@@ -18,6 +18,32 @@
         "sha256": {
           "title": "Sha256",
           "type": "string"
+        },
+        "width_px": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Width Px"
+        },
+        "height_px": {
+          "anyOf": [
+            {
+              "exclusiveMinimum": 0,
+              "type": "integer"
+            },
+            {
+              "type": "null"
+            }
+          ],
+          "default": null,
+          "title": "Height Px"
         }
       },
       "required": [
@@ -49,9 +75,7 @@
       "type": "array"
     },
     "context": {
-      "additionalProperties": {
-        "type": "string"
-      },
+      "additionalProperties": true,
       "title": "Context",
       "type": "object"
     },

@@ -6,8 +6,12 @@ from .action import (
     ActualAction,
     CoordinateFrame,
     ExecutionReceipt,
+    FrameTransform,
+    PlanActionRequest,
     ProviderVerificationReceipt,
+    TransformRecord,
 )
+from .artifacts import ArtifactBinding, CalibrationArtifact, CalibrationBin
 from .authorization import AuthorizationRecord
 from .common import ContractModel, ErrorDetail, EvidenceRef, FactClaim, ResultEnvelope
 from .enums import *
@@ -31,10 +35,13 @@ __all__ = [
     "Action",
     "ActionPlan",
     "ActualAction",
+    "ArtifactBinding",
     "AssertionResult",
     "AssetRef",
     "AuthorizationRecord",
     "BusinessAcceptanceReceipt",
+    "CalibrationArtifact",
+    "CalibrationBin",
     "ClassificationRequest",
     "ClassificationResult",
     "ContractModel",
@@ -43,8 +50,10 @@ __all__ = [
     "EvidenceRef",
     "ExecutionReceipt",
     "FactClaim",
+    "FrameTransform",
     "NormalizedSolution",
     "Offset",
+    "PlanActionRequest",
     "Point",
     "PredictionOutcome",
     "Press",
@@ -55,5 +64,6 @@ __all__ = [
     "ResultEnvelope",
     "SolveRequest",
     "TrackPoint",
+    "TransformRecord",
     "decide_promotion",
 ]
