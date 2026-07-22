@@ -70,9 +70,12 @@ class AuthorizationStatus(str, Enum):
 
 class ChallengeFamily(str, Enum):
     UNKNOWN = "unknown"
+    TEXT = "text"
     SLIDER = "slider"
     ROTATE = "rotate"
     CLICK = "click"
+    TILES = "tiles"
+    PRESS = "press"
 
 
 class CaptureSpace(str, Enum):

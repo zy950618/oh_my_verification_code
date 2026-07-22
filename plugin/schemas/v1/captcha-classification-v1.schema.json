@@ -41,9 +41,12 @@
     "ChallengeFamily": {
       "enum": [
         "unknown",
+        "text",
         "slider",
         "rotate",
-        "click"
+        "click",
+        "tiles",
+        "press"
       ],
       "title": "ChallengeFamily",
       "type": "string"

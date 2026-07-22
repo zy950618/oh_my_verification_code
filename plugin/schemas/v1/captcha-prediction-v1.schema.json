@@ -242,6 +242,7 @@
       "properties": {
         "duration_ms": {
           "exclusiveMinimum": 0,
+          "maximum": 30000,
           "title": "Duration Ms",
           "type": "integer"
         },

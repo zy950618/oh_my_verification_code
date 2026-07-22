@@ -7,6 +7,7 @@ from urllib.parse import unquote, urlparse
 
 from captcha_verification.canonical import file_sha256
 from captcha_verification.contracts import AssetRef
+from captcha_verification.policy import resolve_local_asset
 
 
 ALLOWED_MEDIA_TYPES = {"image/png", "image/jpeg", "image/x-portable-pixmap"}
@@ -55,7 +56,9 @@ class Raster:
     media_type: str
 
 
-def asset_path(asset: AssetRef) -> Path:
+def asset_path(asset: AssetRef, *, roots: tuple[Path, ...] | None = None) -> Path:
+    if roots:
+        return resolve_local_asset(asset, roots=roots)
     parsed = urlparse(asset.uri)
     if parsed.scheme not in {"", "file"}:
         raise ValueError("reference runtime accepts file-backed local fixtures only")
@@ -73,14 +76,14 @@ def asset_path(asset: AssetRef) -> Path:
     return path
 
 
-def load_raster(asset: AssetRef) -> Raster:
+def load_raster(asset: AssetRef, *, roots: tuple[Path, ...] | None = None) -> Raster:
     if asset.media_type not in ALLOWED_MEDIA_TYPES:
         raise ValueError(f"unsupported raster media type: {asset.media_type}")
     try:
         from PIL import Image, ImageOps
     except ImportError as exc:
         raise RuntimeError("Install captcha-verification-skills[vision]") from exc
-    path = asset_path(asset)
+    path = asset_path(asset, roots=roots)
     observed_hash = file_sha256(path)
     if asset.sha256 not in {"auto", observed_hash}:
         raise ValueError("asset sha256 does not match file contents")

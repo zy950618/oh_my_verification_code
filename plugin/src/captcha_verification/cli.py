@@ -26,6 +26,19 @@ from captcha_verification.solvers import solve
 from captcha_verification.contracts.export import export_schemas
 from captcha_verification.registries import DEFAULT_REGISTRY
 from captcha_verification.services import ScaffoldSpec, build_scaffold, write_scaffold
+from captcha_verification.agent_runtime import (
+    AgentPolicyManifest,
+    CodexAdapter,
+    EvalRunner,
+    IndependentReviewer,
+    JobManifest,
+    MockBackend,
+    PromptPackInstaller,
+    ProvenanceRecord,
+    ProvenanceRegistry,
+    evaluate_policy,
+)
+from captcha_verification.agent_runtime.dashboard import summarize
 
 
 def _read_json(path: Path) -> dict[str, object]:
@@ -84,6 +97,53 @@ def build_parser() -> argparse.ArgumentParser:
     scaffold.add_argument("--template-root", type=Path)
     scaffold.add_argument("--write", action="store_true")
 
+    runtime = subcommands.add_parser("runtime", help="Run controlled AI jobs")
+    runtime_sub = runtime.add_subparsers(dest="runtime_command", required=True)
+    inspect = runtime_sub.add_parser("inspect")
+    inspect.add_argument("--job", type=Path, required=True)
+    inspect.add_argument("--policy", type=Path, required=True)
+    run_codex = runtime_sub.add_parser("run-codex")
+    run_codex.add_argument("--job", type=Path, required=True)
+    run_codex.add_argument("--policy", type=Path, required=True)
+    run_codex.add_argument("--executable", default="codex")
+    run_codex.add_argument("--workspace", type=Path)
+    run_codex.add_argument("--prompt")
+    run_codex.add_argument("--receipt", type=Path)
+
+    prompts = subcommands.add_parser("prompts", help="Inspect and manage prompt packs")
+    prompts_sub = prompts.add_subparsers(dest="prompts_command", required=True)
+    for name in ("inspect", "dry-run", "apply"):
+        command = prompts_sub.add_parser(name)
+        command.add_argument("--source", type=Path, required=True)
+        command.add_argument("--destination", type=Path, required=True)
+        command.add_argument("--ledger", type=Path, required=True)
+    rollback = prompts_sub.add_parser("rollback")
+    rollback.add_argument("--backup-id", required=True)
+    rollback.add_argument("--ledger", type=Path, required=True)
+
+    evaluation = subcommands.add_parser("eval", help="Run offline boundary evaluations")
+    evaluation_sub = evaluation.add_subparsers(dest="eval_command", required=True)
+    eval_run = evaluation_sub.add_parser("run")
+    eval_run.add_argument("--policy", type=Path, required=True)
+    eval_run.add_argument("--model", default="mock-model")
+    eval_run.add_argument("--effort", default="medium")
+    eval_run.add_argument("--output", type=Path)
+
+    review = subcommands.add_parser("review", help="Independently review a result")
+    review_sub = review.add_subparsers(dest="review_command", required=True)
+    review_result = review_sub.add_parser("result")
+    review_result.add_argument("--result", type=Path, required=True)
+
+    provenance = subcommands.add_parser("provenance", help="Inspect provenance")
+    provenance_sub = provenance.add_subparsers(dest="provenance_command", required=True)
+    provenance_verify = provenance_sub.add_parser("verify")
+    provenance_verify.add_argument("--registry", type=Path, required=True)
+
+    dashboard = subcommands.add_parser("dashboard", help="Read-only runtime dashboard")
+    dashboard_sub = dashboard.add_subparsers(dest="dashboard_command", required=True)
+    dashboard_summary = dashboard_sub.add_parser("summary")
+    dashboard_summary.add_argument("--root", type=Path, required=True)
+
     return parser
 
 
@@ -141,6 +201,57 @@ def run(args: argparse.Namespace) -> int:
                     missing_evidence=list(scaffold.missing_evidence),
                 )
             )
+            return 0
+        if args.command == "runtime":
+            job = JobManifest.model_validate(_read_json(args.job))
+            policy = AgentPolicyManifest.model_validate(_read_json(args.policy))
+            decision = evaluate_policy(job, policy)
+            _print(ResultEnvelope(operation_status=OperationStatus.SUCCEEDED if decision.allowed else OperationStatus.BLOCKED, request_id=request_id, result=decision.model_dump(mode="json"), missing_evidence=decision.denied_reasons))
+            if args.runtime_command == "inspect":
+                return 0 if decision.allowed else 4
+            result = CodexAdapter(args.executable).run(job, policy, workspace=args.workspace, prompt=args.prompt, receipt_path=args.receipt)
+            status = OperationStatus.SUCCEEDED if result.status == "completed" else OperationStatus.BLOCKED if result.status == "blocked" else OperationStatus.FAILED
+            _print(ResultEnvelope(operation_status=status, request_id=request_id, result=result.model_dump(mode="json"), missing_evidence=result.missing_evidence))
+            return 0 if result.status == "completed" else 4
+        if args.command == "prompts":
+            installer = PromptPackInstaller(allowed_destination_roots=(args.destination.parent if hasattr(args, "destination") else args.ledger.parent,), ledger_path=args.ledger)
+            if args.prompts_command == "rollback":
+                _print(ResultEnvelope(operation_status=OperationStatus.SUCCEEDED, request_id=request_id, result=installer.rollback(args.backup_id)))
+                return 0
+            plan = installer.inspect(args.source, args.destination)
+            if args.prompts_command == "inspect":
+                _print(ResultEnvelope(operation_status=OperationStatus.SUCCEEDED, request_id=request_id, result=plan.to_dict()))
+                return 0
+            if args.prompts_command == "dry-run":
+                _print(ResultEnvelope(operation_status=OperationStatus.SUCCEEDED, request_id=request_id, result=installer.dry_run(plan)))
+                return 0
+            result = installer.apply(plan)
+            status = OperationStatus.SUCCEEDED if result.get("status") == "applied" else OperationStatus.BLOCKED
+            _print(ResultEnvelope(operation_status=status, request_id=request_id, result=result))
+            return 0 if status == OperationStatus.SUCCEEDED else 4
+        if args.command == "eval" and args.eval_command == "run":
+            policy = AgentPolicyManifest.model_validate(_read_json(args.policy))
+            run_result = EvalRunner(MockBackend(), policy).run(model=args.model, effort=args.effort)
+            if args.output:
+                args.output.parent.mkdir(parents=True, exist_ok=True)
+                args.output.write_text(json.dumps(run_result.to_dict(), ensure_ascii=False, indent=2) + "\n", encoding="utf-8")
+            status = OperationStatus.SUCCEEDED if all(item.passed for item in run_result.results) else OperationStatus.BLOCKED
+            _print(ResultEnvelope(operation_status=status, request_id=request_id, result=run_result.to_dict()))
+            return 0 if status == OperationStatus.SUCCEEDED else 4
+        if args.command == "review" and args.review_command == "result":
+            result = ResultManifest.model_validate(_read_json(args.result))
+            verdict = IndependentReviewer().review(result)
+            status = OperationStatus.SUCCEEDED if verdict.verdict == "accepted" else OperationStatus.BLOCKED
+            _print(ResultEnvelope(operation_status=status, request_id=request_id, result=verdict.model_dump(mode="json"), missing_evidence=verdict.missing_evidence))
+            return 0 if status == OperationStatus.SUCCEEDED else 4
+        if args.command == "provenance" and args.provenance_command == "verify":
+            registry = ProvenanceRegistry.load(args.registry)
+            errors = registry.verify()
+            status = OperationStatus.SUCCEEDED if not errors else OperationStatus.FAILED
+            _print(ResultEnvelope(operation_status=status, request_id=request_id, result={"errors": errors, "registry": registry.to_dict()}))
+            return 0 if not errors else 1
+        if args.command == "dashboard" and args.dashboard_command == "summary":
+            _print(ResultEnvelope(operation_status=OperationStatus.SUCCEEDED, request_id=request_id, result=summarize(args.root)))
             return 0
         if args.command in {"classify", "solve", "plan-action"} and args.request is None:
             _print(ResultEnvelope(operation_status=OperationStatus.BLOCKED, request_id=request_id, result={"command": args.command}, missing_evidence=["local fixture request file is required"]))

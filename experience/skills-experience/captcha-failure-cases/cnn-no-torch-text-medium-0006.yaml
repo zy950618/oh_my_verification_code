@@ -1,0 +1,12 @@
+sample_id: text-medium-0006
+source_run_id: cnn-no-torch
+challenge_type: text-captcha
+difficulty: medium
+expected: "B9ZFM"
+predicted: "TTYLL"
+error: 5.0
+image_path: /private/var/folders/4z/m5yr7khx1rs08xbbl35f_s3r0000gn/T/tmp.FeV1IQIBHr/raw/captcha-vision-lab/cnn-no-torch/dataset/text-captcha/medium/text-medium-0006.png
+label_path: /private/var/folders/4z/m5yr7khx1rs08xbbl35f_s3r0000gn/T/tmp.FeV1IQIBHr/raw/captcha-vision-lab/cnn-no-torch/dataset/text-captcha/medium/text-medium-0006.json
+root_cause: medium text segmentation/template matching failed under noise, rotation, or sticky glyphs
+suggested_fix: add connected-component segmentation and train a glyph classifier on hard samples
+whether_eval_added: true

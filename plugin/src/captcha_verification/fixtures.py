@@ -84,6 +84,15 @@ def generate_reference_fixtures(root: Path, *, count_per_family: int = 4) -> dic
         label_path = label_root / f"click-{index:03d}.json"
         label_path.write_text(json.dumps(label, sort_keys=True), encoding="utf-8")
         samples.append(_sample(path, label_path, "click", index))
+
+        # Text, tiles, and press remain explicit candidate fixtures until their
+        # target-specific calibration is supplied; labels stay server-side.
+        for family in ("text", "tiles", "press"):
+            candidate = image_root / f"{family}-{index:03d}.png"
+            image.save(candidate)
+            candidate_label = label_root / f"{family}-{index:03d}.json"
+            candidate_label.write_text(json.dumps({"family": family}, sort_keys=True), encoding="utf-8")
+            samples.append(_sample(candidate, candidate_label, family, index))
     manifest = {
         "schema_version": "captcha-fixture-manifest/v1",
         "fixture_version": FIXTURE_VERSION,

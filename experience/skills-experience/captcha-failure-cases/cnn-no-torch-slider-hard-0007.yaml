@@ -1,0 +1,12 @@
+sample_id: slider-hard-0007
+source_run_id: cnn-no-torch
+challenge_type: slider-captcha
+difficulty: hard
+expected: {"x": 131, "y": 63}
+predicted: {"x": 111, "y": 66}
+error: 20.223748416156685
+image_path: /private/var/folders/4z/m5yr7khx1rs08xbbl35f_s3r0000gn/T/tmp.FeV1IQIBHr/raw/captcha-vision-lab/cnn-no-torch/dataset/slider-captcha/hard/slider-hard-0007.jpg
+label_path: /private/var/folders/4z/m5yr7khx1rs08xbbl35f_s3r0000gn/T/tmp.FeV1IQIBHr/raw/captcha-vision-lab/cnn-no-torch/dataset/slider-captcha/hard/slider-hard-0007.json
+root_cause: hard low-contrast or distractor gap confused edge/brightness scan
+suggested_fix: add template matching with gap-shape priors and reject distractor gaps
+whether_eval_added: true

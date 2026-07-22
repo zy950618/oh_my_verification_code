@@ -29,6 +29,7 @@ mcp = ["mcp>=1.27,<2"]
 browser = ["playwright>=1.51,<2"]
 vision = ["Pillow>=11,<13"]
 train = ["numpy>=2,<3"]
+deep-learning = ["torch>=2.2,<3"]
 dev = [
   "build>=1.2,<2",
   "httpx>=0.28,<1",

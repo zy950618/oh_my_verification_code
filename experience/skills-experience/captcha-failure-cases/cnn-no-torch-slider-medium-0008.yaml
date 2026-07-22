@@ -1,0 +1,12 @@
+sample_id: slider-medium-0008
+source_run_id: cnn-no-torch
+challenge_type: slider-captcha
+difficulty: medium
+expected: {"x": 193, "y": 71}
+predicted: {"x": 108, "y": 109}
+error: 93.1074647920348
+image_path: /private/var/folders/4z/m5yr7khx1rs08xbbl35f_s3r0000gn/T/tmp.FeV1IQIBHr/raw/captcha-vision-lab/cnn-no-torch/dataset/slider-captcha/medium/slider-medium-0008.png
+label_path: /private/var/folders/4z/m5yr7khx1rs08xbbl35f_s3r0000gn/T/tmp.FeV1IQIBHr/raw/captcha-vision-lab/cnn-no-torch/dataset/slider-captcha/medium/slider-medium-0008.json
+root_cause: medium low-contrast or distractor gap confused edge/brightness scan
+suggested_fix: add template matching with gap-shape priors and reject distractor gaps
+whether_eval_added: true

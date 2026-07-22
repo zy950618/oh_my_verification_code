@@ -1,16 +1,17 @@
 from __future__ import annotations
 
-from typing import Protocol, runtime_checkable
+from typing import Protocol
 
 from captcha_verification.contracts import ActionPlan, AuthorizationRecord, ExecutionReceipt
+from captcha_verification.runtime import ExecutionPermit
 
 
 @runtime_checkable
 class AuthorizedTestDriver(Protocol):
     driver_id: str
 
-    def execute(self, *, plan: ActionPlan, authorization: AuthorizationRecord) -> ExecutionReceipt:
-        """Execute a prevalidated plan and return an execution-only receipt."""
+    def execute(self, *, plan: ActionPlan, authorization: AuthorizationRecord, permit: ExecutionPermit) -> ExecutionReceipt:
+        """Execute a prevalidated plan only while its permit is valid."""
         ...
 
 

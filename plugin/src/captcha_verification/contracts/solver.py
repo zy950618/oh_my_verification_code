@@ -25,7 +25,7 @@ class TrackPoint(Point):
 
 
 class Press(ContractModel):
-    duration_ms: int = Field(gt=0)
+    duration_ms: int = Field(gt=0, le=30_000)
     x: float | None = None
     y: float | None = None
 
@@ -123,6 +123,15 @@ class SolveRequest(ContractModel):
     solver_id: str | None = None
     authorization_record_id: str | None = None
     expires_at: datetime | None = None
+
+
+    @model_validator(mode="after")
+    def validate_request(self) -> "SolveRequest":
+        if not self.allowed_solution_types:
+            raise ValueError("allowed_solution_types must not be empty")
+        if self.expires_at is not None and self.expires_at <= datetime.now(self.expires_at.tzinfo):
+            raise ValueError("solve request has expired")
+        return self
 
 
 class PredictionOutcome(ContractModel):

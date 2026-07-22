@@ -23,16 +23,16 @@ from captcha_verification.raster import Raster, bright_mask, load_raster, mask_c
 
 
 DATASET_VERSION = "reference-synthetic-raster-v1"
-DATASET_HASH = artifact_hash({"generator": "reference-fixtures-v1", "families": ["slider", "rotate", "click"]})
+DATASET_HASH = artifact_hash({"generator": "reference-fixtures-v1", "families": ["slider", "rotate", "click", "text", "tiles", "press"]})
 MODEL_ID = "reference-raster-algorithms"
 MODEL_VERSION = "1.0.0"
-MODEL_HASH = artifact_hash({"id": MODEL_ID, "weights": False, "families": ["slider", "rotate", "click"]})
+MODEL_HASH = artifact_hash({"id": MODEL_ID, "weights": False, "families": ["slider", "rotate", "click", "text", "tiles", "press"]})
 PREPROCESSING_VERSION = "rgb-explicit-v1"
 PREPROCESSING_HASH = artifact_hash({"mode": "RGB", "orientation": "explicit", "resize": "none"})
 CALIBRATION_VERSION = "reference-calibration-v1"
 CALIBRATION_HASHES = {
     family: artifact_hash({"version": CALIBRATION_VERSION, "family": family, "method": "conservative-quality-bins-v1"})
-    for family in ("slider", "rotate", "click")
+    for family in ("slider", "rotate", "click", "text", "tiles", "press")
 }
 
 
@@ -109,6 +109,7 @@ class SliderSolver:
     solver_id: str = "reference-slider-solver"
     solver_version: str = "1.0.0"
     supported_families: frozenset[str] = frozenset({"slider"})
+    supported_solution_types: frozenset[SolutionType] = frozenset({SolutionType.OFFSET})
 
     def solve(self, request: SolveRequest) -> PredictionOutcome:
         raster = load_raster(request.assets[0])
@@ -144,6 +145,7 @@ class RotateSolver:
     solver_id: str = "reference-rotate-solver"
     solver_version: str = "1.0.0"
     supported_families: frozenset[str] = frozenset({"rotate"})
+    supported_solution_types: frozenset[SolutionType] = frozenset({SolutionType.ANGLE})
 
     def solve(self, request: SolveRequest) -> PredictionOutcome:
         raster = load_raster(request.assets[0])
@@ -195,6 +197,7 @@ class ClickSolver:
     solver_id: str = "reference-click-solver"
     solver_version: str = "1.0.0"
     supported_families: frozenset[str] = frozenset({"click"})
+    supported_solution_types: frozenset[SolutionType] = frozenset({SolutionType.POINTS})
 
     def solve(self, request: SolveRequest) -> PredictionOutcome:
         raster = load_raster(request.assets[0])
@@ -226,7 +229,19 @@ class ClickSolver:
         )
 
 
-SOLVERS = {"slider": SliderSolver(), "rotate": RotateSolver(), "click": ClickSolver()}
+from .press import PressSolver
+from .text import TextSolver
+from .tiles import TilesSolver
+
+
+SOLVERS = {
+    "slider": SliderSolver(),
+    "rotate": RotateSolver(),
+    "click": ClickSolver(),
+    "text": TextSolver(),
+    "tiles": TilesSolver(),
+    "press": PressSolver(),
+}
 
 
 def solve(request: SolveRequest) -> PredictionOutcome:
@@ -241,6 +256,13 @@ def solve(request: SolveRequest) -> PredictionOutcome:
             return _outcome(request, solver_id="none", solver_version="0", raster=None, status=PredictionStatus.UNSUPPORTED, warning=f"unsupported challenge family: {family}")
         if request.solver_id and request.solver_id != solver.solver_id:
             return _outcome(request, solver_id=solver.solver_id, solver_version=solver.solver_version, raster=None, status=PredictionStatus.UNSUPPORTED, warning="requested solver does not match family registry dispatch")
-        return solver.solve(request)
+        if not request.allowed_solution_types:
+            return _outcome(request, solver_id="none", solver_version="0", raster=None, status=PredictionStatus.UNSUPPORTED, warning="no solution type is allowed")
+        if not set(request.allowed_solution_types).intersection(solver.supported_solution_types):
+            return _outcome(request, solver_id=solver.solver_id, solver_version=solver.solver_version, raster=None, status=PredictionStatus.UNSUPPORTED, warning="solver has no allowed solution type")
+        outcome = solver.solve(request)
+        if outcome.status == PredictionStatus.PRODUCED and outcome.solution and outcome.solution.type not in request.allowed_solution_types:
+            return _outcome(request, solver_id=solver.solver_id, solver_version=solver.solver_version, raster=None, status=PredictionStatus.UNSUPPORTED, warning="solver output is outside allowed_solution_types")
+        return outcome
     except (OSError, RuntimeError, ValueError) as exc:
         return _outcome(request, solver_id="reference-dispatch", solver_version="1.0.0", raster=None, status=PredictionStatus.FAILED, warning=str(exc))

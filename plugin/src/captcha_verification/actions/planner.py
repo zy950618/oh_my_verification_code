@@ -125,6 +125,15 @@ def plan_action(request: PlanActionRequest) -> ActionPlan:
             Action(kind=ActionKind.POINTER_MOVE, time_ms=200, x=end_x, y=end_y),
             Action(kind=ActionKind.POINTER_UP, time_ms=220, x=end_x, y=end_y),
         ]
+    elif solution_type == SolutionType.TRACK:
+        if not solution.track:
+            raise ValueError("track solution must contain points")
+        for index, point in enumerate(solution.track):
+            x, y, records = map_point(point.x, point.y, request.coordinate_frame)
+            transforms.extend(records)
+            actions.append(Action(kind=ActionKind.POINTER_MOVE if index else ActionKind.POINTER_DOWN, time_ms=point.time_ms, x=x, y=y))
+        last = actions[-1]
+        actions.append(Action(kind=ActionKind.POINTER_UP, time_ms=last.time_ms + 1, x=last.x, y=last.y))
     elif solution_type == SolutionType.ANGLE and solution.angle_degrees is not None:
         actions = [Action(kind=ActionKind.ROTATE, time_ms=0, angle_degrees=solution.angle_degrees)]
     elif solution_type == SolutionType.POINTS:
@@ -132,6 +141,16 @@ def plan_action(request: PlanActionRequest) -> ActionPlan:
             x, y, records = map_point(point.x, point.y, request.coordinate_frame)
             transforms.extend(records)
             actions.append(Action(kind=ActionKind.CLICK, time_ms=index * 100, x=x, y=y))
+    elif solution_type == SolutionType.TEXT and solution.text:
+        actions = [Action(kind=ActionKind.TYPE_TEXT, time_ms=0, text=solution.text)]
+    elif solution_type == SolutionType.PRESS and solution.press:
+        if solution.press.x is None or solution.press.y is None:
+            raise ValueError("press solution requires x and y")
+        x, y, records = map_point(solution.press.x, solution.press.y, request.coordinate_frame)
+        transforms.extend(records)
+        actions = [
+            Action(kind=ActionKind.PRESS, time_ms=0, x=x, y=y, duration_ms=solution.press.duration_ms),
+        ]
     else:
         raise ValueError(f"reference planner does not support solution type {solution.type}")
     prediction_hash = prediction.artifact_hash or artifact_hash(prediction)
