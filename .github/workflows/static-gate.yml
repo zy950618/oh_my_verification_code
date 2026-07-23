@@ -112,7 +112,22 @@ jobs:
             printf 'Generated runs or authorized live evidence must remain outside the public repository:\n%s\n' "$BAD"
             exit 1
           fi
-          BAD=$(git grep -n -I -E '(^|["'"' ]):?([A-Za-z]:\\\\|/Users/|/home/)|oh_my_reverse_skill' -- ':!archive/**' ':!migration/**' ':!docs/migration-from-oh-my-reverse-skill.md' ':!.github/workflows/static-gate.yml' || true)
+          BAD=$(git grep -n -I -E 'oh_my_reverse_skill|/Users/|/home/' -- \
+            ':!archive/**' \
+            ':!migration/**' \
+            ':!docs/migration-from-oh-my-reverse-skill.md' \
+            ':!.github/workflows/static-gate.yml' \
+            || true)
+          if [ -n "$BAD" ]; then
+            printf 'Machine-specific or legacy repository paths found in active files:\n%s\n' "$BAD"
+            exit 1
+          fi
+          BAD=$(git grep -n -I -E '[A-Za-z]:\\\\' -- \
+            ':!archive/**' \
+            ':!migration/**' \
+            ':!docs/migration-from-oh-my-reverse-skill.md' \
+            ':!.github/workflows/static-gate.yml' \
+            || true)
           if [ -n "$BAD" ]; then
             printf 'Machine-specific or legacy repository paths found in active files:\n%s\n' "$BAD"
             exit 1
