@@ -104,6 +104,24 @@ jobs:
             exit 1
           fi
           test ! -d private
+      - name: Check generated-output and path hygiene
+        run: |
+          set -euo pipefail
+          BAD=$(git ls-files | grep -E '(^|/)(run-[^/]+\.json$|captcha-failure-cases/.*\.yaml$|authorized-live/|captcha-model-lab/repeat_reports/)' || true)
+          if [ -n "$BAD" ]; then
+            printf 'Generated runs or authorized live evidence must remain outside the public repository:\n%s\n' "$BAD"
+            exit 1
+          fi
+          BAD=$(git grep -n -I -E '(^|["'"' ]):?([A-Za-z]:\\\\|/Users/|/home/)|oh_my_reverse_skill' -- ':!archive/**' ':!migration/**' ':!docs/migration-from-oh-my-reverse-skill.md' ':!.github/workflows/static-gate.yml' || true)
+          if [ -n "$BAD" ]; then
+            printf 'Machine-specific or legacy repository paths found in active files:\n%s\n' "$BAD"
+            exit 1
+          fi
+          BIG=$(git ls-files -z | xargs -0 -n1 sh -c 'test "$(wc -c < "$0")" -gt 1048576 && printf "%s\n" "$0"' || true)
+          if [ -n "$BIG" ]; then
+            printf 'Tracked files larger than 1 MiB require an explicit fixture exception:\n%s\n' "$BIG"
+            exit 1
+          fi
       - name: Check required governance files
         run: |
           test -f README.md

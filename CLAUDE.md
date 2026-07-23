@@ -52,4 +52,4 @@ Historical `origin_locator` values are provenance. Add `current_locator` and `lo
 
 ## Public repository policy
 
-Commit specifications, source, schemas, Skills, evals, CI, and sanitized examples. Do not commit raw HAR files, cookies or tokens, browser profiles, model weights/checkpoints, private targets, unsanitized reports, production evidence, or credentials.
+Commit specifications, source, schemas, Skills, evals, CI, and sanitized examples. Do not commit raw HAR files, cookies or tokens, browser profiles, model weights/checkpoints, private targets, unsanitized reports, production evidence, credentials, timestamped run outputs, repeat reports, failure-card batches, or authorized-live observations. Keep only canonical small fixtures needed to validate the public product; archive other evidence outside the repository before removing it from Git.

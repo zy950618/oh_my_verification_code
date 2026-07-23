@@ -47,7 +47,7 @@ def test_legacy_locator_index_resolves_and_matches_content() -> None:
 
     for record in records:
         assert record["schema_version"] == "legacy-locator-index/v1"
-        assert record["locator_status"] == "resolved"
+        assert record["locator_status"] in {"resolved", "archived_external"}
         assert isinstance(record["reference_count"], int) and record["reference_count"] >= 0
         assert "preserve embedded origin locators" in record["migration_policy"]
 
@@ -60,8 +60,12 @@ def test_legacy_locator_index_resolves_and_matches_content() -> None:
         seen.add(locator)
 
         current = ROOT / relative
-        assert current.is_file(), locator
-        assert hashlib.sha256(current.read_bytes()).hexdigest() == record["content_sha256"], locator
+        if record["locator_status"] == "resolved":
+            assert current.is_file(), locator
+            assert hashlib.sha256(current.read_bytes()).hexdigest() == record["content_sha256"], locator
+        else:
+            archive_locator = record.get("archive_locator", "")
+            assert archive_locator.startswith("external://")
 
 
 def test_committed_schemas_match_canonical_export(tmp_path: Path) -> None:

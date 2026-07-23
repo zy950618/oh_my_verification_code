@@ -14,14 +14,14 @@ ROOT = Path(__file__).resolve().parents[1]
 REPO = ROOT.parents[1]
 REPORT_DIR = ROOT / "repeat_reports"
 COMMANDS = [
-    ("inference", "python public-range-evidence\\captcha-model-lab\\inference\\sample_infer.py", [sys.executable, "public-range-evidence/captcha-model-lab/inference/sample_infer.py"]),
-    ("pass_rate", "python public-range-evidence\\captcha-model-lab\\eval\\evaluate_pass_rate.py", [sys.executable, "public-range-evidence/captcha-model-lab/eval/evaluate_pass_rate.py"]),
+    ("inference", "python evidence/public-range/captcha-model-lab/inference/sample_infer.py", [sys.executable, "evidence/public-range/captcha-model-lab/inference/sample_infer.py"]),
+    ("pass_rate", "python evidence/public-range/captcha-model-lab/eval/evaluate_pass_rate.py", [sys.executable, "evidence/public-range/captcha-model-lab/eval/evaluate_pass_rate.py"]),
     ("action_schema", "python tools\\validate_captcha_action_schema.py", [sys.executable, "tools/validate_captcha_action_schema.py"]),
     ("dataset", "python tools\\validate_captcha_dataset.py", [sys.executable, "tools/validate_captcha_dataset.py"]),
     ("training_report", "python tools\\validate_captcha_training_report.py", [sys.executable, "tools/validate_captcha_training_report.py"]),
     ("model_package", "python tools\\validate_captcha_model_package.py", [sys.executable, "tools/validate_captcha_model_package.py"]),
     ("pass_rate_manifest", "python tools\\validate_captcha_pass_rate.py", [sys.executable, "tools/validate_captcha_pass_rate.py"]),
-    ("negative_cases", "python public-range-evidence\\captcha-model-lab\\negative_cases\\validate_negative_cases.py", [sys.executable, "public-range-evidence/captcha-model-lab/negative_cases/validate_negative_cases.py"]),
+    ("negative_cases", "python evidence/public-range/captcha-model-lab/negative_cases/validate_negative_cases.py", [sys.executable, "evidence/public-range/captcha-model-lab/negative_cases/validate_negative_cases.py"]),
 ]
 
 

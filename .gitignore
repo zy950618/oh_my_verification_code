@@ -63,6 +63,19 @@ datasets/**/exports/
 datasets/**/crops/
 **/checkpoints/
 
+# Public repository generated run outputs
+# Keep small canonical fixtures explicitly tracked; ignore timestamped runs.
+datasets/captcha_flywheel/failures/run-*/
+datasets/captcha_flywheel/evals/run-*/
+datasets/captcha_flywheel/labels/run-*/
+datasets/captcha_flywheel/manifests/run-*/
+datasets/captcha_flywheel/predictions/run-*/
+datasets/captcha_flywheel/splits/run-*/
+experience/skills-experience/captcha-failure-cases/*.yaml
+evidence/public-range/**/run-*.json
+evidence/public-range/captcha-model-lab/repeat_reports/
+evidence/authorized-live/
+
 # 模型权重与二进制包
 *.pt
 *.pth
@@ -75,13 +88,6 @@ datasets/**/crops/
 *.gz
 
 # 私有配置
-private/
-*.local.yaml
-*.local.json
-.env
-.env.*
-
-# Playwright / 浏览器测试产物
 playwright-report/
 test-results/
 blob-report/

@@ -10,12 +10,12 @@ Scope:
 - NOT VERIFIED: these files do not prove third-party CAPTCHA, WAF, or managed
   challenge success.
 
-Run:
+Run from the repository root:
 
 ```bash
-python tools/validate_captcha_action_schema.py public-range-evidence/captcha-model-lab/manifests/action_manifest.json
-python tools/validate_captcha_dataset.py public-range-evidence/captcha-model-lab/manifests/dataset_manifest.json
-python tools/validate_captcha_training_report.py public-range-evidence/captcha-model-lab/manifests/training_report.json
-python tools/validate_captcha_pass_rate.py public-range-evidence/captcha-model-lab/manifests/pass_rate_report.json
-python tools/validate_captcha_model_package.py public-range-evidence/captcha-model-lab/manifests/model_package_manifest.json
+python tools/validate_captcha_action_schema.py evidence/public-range/captcha-model-lab/manifests/action_manifest.json
+python tools/validate_captcha_dataset.py evidence/public-range/captcha-model-lab/manifests/dataset_manifest.json
+python tools/validate_captcha_training_report.py evidence/public-range/captcha-model-lab/manifests/training_report.json
+python tools/validate_captcha_pass_rate.py evidence/public-range/captcha-model-lab/manifests/pass_rate_report.json
+python tools/validate_captcha_model_package.py evidence/public-range/captcha-model-lab/manifests/model_package_manifest.json
 ```

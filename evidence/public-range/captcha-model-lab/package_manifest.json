@@ -4,9 +4,9 @@
   "model_package_id": "captcha-model-lab-sample-package",
   "package_version": "0.1.0",
   "canonical_manifest": "manifests/package_manifest.json",
-  "dataset_ref": "dataset_manifest.json",
+  "dataset_ref": "manifests/dataset_manifest.json",
   "training_report_ref": "manifests/training_report.json",
-  "pass_rate_report_ref": "metrics.json",
+  "pass_rate_report_ref": "manifests/pass_rate_report.json",
   "files": [
     {
       "role": "model",
@@ -18,7 +18,7 @@
     },
     {
       "role": "sample_predictions",
-      "path": "sample_predictions.json"
+      "path": "inference/sample_predictions.json"
     },
     {
       "role": "expected_predictions",
@@ -26,11 +26,11 @@
     },
     {
       "role": "pass_rate_markdown",
-      "path": "pass_rate_report.md"
+      "path": "eval/pass_rate_report.md"
     },
     {
       "role": "failure_cases",
-      "path": "failure_cases.json"
+      "path": "reports/failure-cases.json"
     }
   ],
   "inference_contract": {

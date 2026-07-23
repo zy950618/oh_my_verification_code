@@ -121,4 +121,4 @@ See [MIGRATION.md](MIGRATION.md) and [migration/skill-names.yaml](migration/skil
 
 ## Public repository policy
 
-Commit specifications, source, schemas, Skills, evals, CI, and sanitized minimal examples. Do not commit raw HAR files, cookies or tokens, browser profiles, model weights/checkpoints, private targets, unsanitized evidence, or production credentials.
+Commit specifications, source, schemas, Skills, evals, CI, and sanitized minimal examples. Do not commit raw HAR files, cookies or tokens, browser profiles, model weights/checkpoints, private targets, unsanitized evidence, production credentials, timestamped run outputs, repeat reports, or authorized-live observations. Large dataset manifests, failure-card batches, and evaluation outputs are reproducible or archived outside the public repository; the repository keeps only canonical small fixtures needed for validation.

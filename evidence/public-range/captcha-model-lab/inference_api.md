@@ -2,13 +2,15 @@
 
 ## Command
 
-```powershell
-python public-range-evidence/captcha-model-lab/inference/sample_infer.py
+Run from the repository root:
+
+```bash
+python evidence/public-range/captcha-model-lab/inference/sample_infer.py
 ```
 
 ## Input
 
-The sample inference script reads `dataset_manifest.json` and local synthetic images under `sample_images/`.
+The sample inference script reads the canonical dataset manifest and local synthetic images under `samples/images/`.
 
 ## Output
 
